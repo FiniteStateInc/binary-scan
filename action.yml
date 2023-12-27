@@ -1,0 +1,49 @@
+# action.yml
+name: 'binary-quick-scan'
+description: 'Creates a new Asset Version for an existing asset, and uploads a binary file for Finite State Binary Analysis. By default, this uses the existing Business Unit and Created By User for the Asset. If you need to change these, you can provide the IDs for them.'
+inputs:
+  finite-state-client-id:  # id of input
+    description: 'Finitestate API client id'
+    required: true
+  finite-state-secret: 
+    description: 'Finitestate API secret'
+    required: true
+  finite-state-organization-context: 
+    description: 'Organization context. This is provided by the Finite State API management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".'
+    required: true
+  asset-id:
+    description: 'Asset ID to create the asset version for.'
+    required: true
+  version:
+    description: 'Version to create the asset version for.'
+    required: true
+  file-path:
+    description: 'Local path to the file to upload.'
+    required: true
+  quick-scan:
+    description: Defaults to true (Quick Scan), it will upload the file for quick scan. For details about Quick Scan vs Full Scan, please see the API documentation.
+    required: true
+    default: true
+  business-unit-id:
+    description: '(optional) Business Unit ID to create the asset version for. If not provided, the existing Business Unit for the Asset will be used.'
+    required: false
+  created-by-user-id:
+    description: '(optional) Created By User ID to create the asset version for. If not provided, the existing Created By User for the Asset will be used.'
+    required: false
+  product-id:
+    description: '(optional) Product ID to create the asset version for. If not provided, the existing Product for the Asset will be used, if it exists.'
+    required: false
+  artifact-description:
+    description: '(optional) Description of the artifact. If not provided, the default is "Firmware Binary".'
+    required: false
+outputs:
+  response:
+    description: 'Response get from Finite State servers'
+  error:
+    description: 'Error message or details on why the action fails'
+  asset-version-url:
+    description: 'Finite State Binary Analysis URL for the file uploaded'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
