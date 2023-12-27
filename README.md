@@ -76,7 +76,7 @@ You will also need to add your code into the workflow. The example only includes
 **Example:** 
 
 ```yaml
-uses: @FiniteStateInc/binary-scan@v1.0.0
+uses: FiniteStateInc/binary-scan@v1.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -140,7 +140,7 @@ jobs:
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Binary Scan
-        uses: @FiniteStateInc/binary-scan@v1.0.0
+        uses: FiniteStateInc/binary-scan@v1.0.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
