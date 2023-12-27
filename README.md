@@ -24,32 +24,30 @@ By default, the asset version will be assigned the existing values for Business 
 
 ## Inputs
 
-| parameter                         | description                                                                                                                                                                                  | required | default |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| finite-state-client-id            | Finitestate API client ID                                                                                                                                                                    | `true`   |         |
-| finite-state-secret               | Finitestate API secret                                                                                                                                                                       | `true`   |         |
-| finite-state-organization-context | Organization context. This is provided by the Finite State API management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".                                                             | `true`   |         |
-| asset-id                          | Asset ID for the asset that the new asset version will belong to                                                                                                                             | `true`   |         |
-| version                           | The name of the asset version that will be created                                                                                                                                           | `true`   |         |
-| file-path                         | Local path of the file to be uploaded                                                                                                                                                        | `true`   |         |
-| quick-scan                        | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `true`   | true    |
-| business-unit-id                  | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.                             | `false`  |         |
-| created-by-user-id                | (optional) ID of the user to be recorded as the 'Created By User' on the asset version. If not provided, the version will adopt the existing value of the asset.                             | `false`  |         |
-| product-id                        | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable.                                         | `false`  |         |
-| artifact-description              | (optional) Description of the artifact. If not provided, the default is "Firmware Binary".                                                                                                   | `false`  |         |
-
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| finite-state-client-id | Finitestate API client ID. | `true` |  |
+| finite-state-secret | Finitestate API secret. | `true` |  |
+| finite-state-organization-context | Organization context. This is provided by the Finite State API management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx". | `true` |  |
+| asset-id | Asset ID for the asset that the new asset version will belong to. | `true` |  |
+| version | The name of the asset version that will be created. | `true` |  |
+| file-path | Local path of the file to be uploaded. | `true` |  |
+| quick-scan | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `true` | true |
+| business-unit-id | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset. | `false` |  |
+| created-by-user-id | (optional) ID of the user to be recorded as the "Created By User" on the asset version. If not provided, the version will adopt the existing value of the asset. | `false` |  |
+| product-id | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable. | `false` |  |
+| artifact-description | (optional) Description of the artifact. If not provided, the default is "Firmware Binary". | `false` |  |
 <!-- action-docs-inputs -->
 
 <!-- action-docs-outputs -->
 
 ## Outputs
 
-| parameter         | description                                                     |
-| ----------------- | --------------------------------------------------------------- |
-| response          | Response from Finite State servers                              |
-| error             | Error message or details on why the action fails, if applicable |
-| asset-version-url | Finite State binary analysis URL for the file uploaded          |
-
+| parameter | description |
+| --- | --- |
+| response | Response from Finite State servers. |
+| error | Error message or details on why the action fails, if applicable. |
+| asset-version-url | Finite State binary analysis URL for the file uploaded. |
 <!-- action-docs-outputs -->
 
 ## Set Up Workflow
@@ -140,9 +138,9 @@ jobs:
         run: |
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Binary Quickscan
+      - name: Binary Scan
         uses: @FiniteStateInc/binary-scan@v1.0.0
-        id: binary_quick_scan
+        id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
           finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -152,16 +150,16 @@ jobs:
           file-path: # Put the same path from the "Upload binary generated file" step here
 
       - name: Set response of binary quick scan
-        if: steps.binary_quick_scan.outcome=='success'
+        if: steps.binary_scan.outcome=='success'
         id: set_response
         run: |
-          echo Asset version URL: ${{steps.binary_quick_scan.outputs.asset-version-url}}
-          echo Response: "${{steps.binary_quick_scan.outputs.response}}"
-          echo Error: "${{steps.binary_quick_scan.outputs.error}}"
+          echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+          echo Response: "${{steps.binary_scan.outputs.response}}"
+          echo Error: "${{steps.binary_scan.outputs.error}}"
     outputs:
-      ASSET_VERSION_URL: ${{steps.binary_quick_scan.outputs.asset-version-url}}
-      ERROR: ${{steps.binary_quick_scan.outputs.error}}
-      RESPONSE: ${{steps.binary_quick_scan.outputs.response}}
+      ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
+      ERROR: ${{steps.binary_scan.outputs.error}}
+      RESPONSE: ${{steps.binary_scan.outputs.response}}
 
   show-link-as-comment: # This job generates a comment automatically in the PR in order to link to Finite State
     needs: finitestate-upload-binary
