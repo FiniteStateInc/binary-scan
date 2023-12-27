@@ -1,6 +1,6 @@
 # action.yml
 name: 'binary-scan'
-description: 'Creates a new Asset Version for an existing asset, and uploads a binary file for Finite State Binary Analysis. By default, this uses the existing Business Unit and Created By User for the Asset. If you need to change these, you can provide the IDs for them.'
+description: 'Upload a binary to the Finite State Platform to conduct a Quick Scan or full analysis.'
 inputs:
   finite-state-client-id:  # id of input
     description: 'Finitestate API client ID.'
