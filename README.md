@@ -27,7 +27,7 @@ By default, the asset version will be assigned the existing values for Business 
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------- |
 | finite-state-client-id            | Finite State API client ID                                                                                                                           | `true`   | `string`   |         |
 | finite-state-secret               | Finite State API secret                                                                                                                              | `true`   | `string`   |         |
-| finite-state-organization-context | The Organization-Context should have been provided to you by your Finite State representative, and looks like `xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`                    | `true`   | `string`   |         |
+| finite-state-organization-context | The Organization-Context should have been provided to you by your Finite State representative and looks like `xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`                    | `true`   | `string`   |         |
 | asset-id                          | Asset ID for the asset that the new  asset version will belong to                                                                                                             | `true`   | `string`   |         |
 | version                           | The name of the asset version that will be created                                                                                                  | `true`   | `string`   |         |
 | file-path                         | Local path of the file to be uploaded                                                                                                                   | `true`   | `string`   |         |
@@ -47,7 +47,7 @@ By default, the asset version will be assigned the existing values for Business 
 | ----------------- | ------------------------------------------------------ |
 | response          | Response from Finite State servers                 |
 | error             | Error message or details on why the action fails, if applicable       |
-| asset-version-url | Finite State binary analysis URL for the file uploaded |
+| asset-version-url | URL to view your results in the Finite State Platform |
 
 <!-- action-docs-outputs -->
 
