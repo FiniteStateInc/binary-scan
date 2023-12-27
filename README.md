@@ -9,12 +9,11 @@
 
 The Finite State `binary-scan` GitHub Action allows you to easily integrate the Finite State Platform into your CI/CD workflows.
 
-Following the steps below will:
-
-- Upload the file to the Finite State platform
-- Create a new version of the configured asset
-- Conduct a Quick Scan binary analysis on the uploaded file
-- Associate the results to the asset version
+Following the steps below will: 
+* Upload the file to the Finite State platform
+* Create a new version of the configured asset
+* Conduct a Quick Scan binary analysis on the uploaded file
+* Associate the results to the asset version
 
 By default, the asset version will be assigned the existing values for Business Unit and Created By User. If you need to change these, you can provide the IDs for them.
 
@@ -24,30 +23,32 @@ By default, the asset version will be assigned the existing values for Business 
 
 ## Inputs
 
-| parameter | description | required | default |
-| --- | --- | --- | --- |
-| finite-state-client-id | Finitestate API client ID. | `true` |  |
-| finite-state-secret | Finitestate API secret. | `true` |  |
-| finite-state-organization-context | Organization context. This is provided by the Finite State API management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx". | `true` |  |
-| asset-id | Asset ID for the asset that the new asset version will belong to. | `true` |  |
-| version | The name of the asset version that will be created. | `true` |  |
-| file-path | Local path of the file to be uploaded. | `true` |  |
-| quick-scan | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `true` | true |
-| business-unit-id | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset. | `false` |  |
-| created-by-user-id | (optional) ID of the user to be recorded as the "Created By User" on the asset version. If not provided, the version will adopt the existing value of the asset. | `false` |  |
-| product-id | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable. | `false` |  |
-| artifact-description | (optional) Description of the artifact. If not provided, the default is "Firmware Binary". | `false` |  |
+| parameter                         | description                                                                                                                                         | required | type | default |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------- |
+| finite-state-client-id            | Finite State API client ID                                                                                                                           | `true`   | `string`   |         |
+| finite-state-secret               | Finite State API secret                                                                                                                              | `true`   | `string`   |         |
+| finite-state-organization-context | The Organization-Context should have been provided to you by your Finite State representative, and looks like `xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`                    | `true`   | `string`   |         |
+| asset-id                          | Asset ID for the asset that the new  asset version will belong to                                                                                                             | `true`   | `string`   |         |
+| version                           | The name of the asset version that will be created                                                                                                  | `true`   | `string`   |         |
+| file-path                         | Local path of the file to be uploaded                                                                                                                   | `true`   | `string`   |         |
+| quick-scan                        | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `false`   | `boolean`   | `true`    |
+| business-unit-id                  | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.                | `false`  | `string`   |         |
+| created-by-user-id                | (optional) ID of the user to be recorded as the 'Created By User' on the asset version. If not provided, the  version will adopt the existing value of the asset.            | `false`  | `string`   |         |
+| product-id                        | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable.              | `false`  | `string`   |         |
+| artifact-description              | (optional) Description of the artifact. If not provided, the default is "Firmware Binary".                                                          | `false`  | `string`   |         |
+
 <!-- action-docs-inputs -->
 
 <!-- action-docs-outputs -->
 
 ## Outputs
 
-| parameter | description |
-| --- | --- |
-| response | Response from Finite State servers. |
-| error | Error message or details on why the action fails, if applicable. |
-| asset-version-url | Finite State binary analysis URL for the file uploaded. |
+| parameter         | description                                            |
+| ----------------- | ------------------------------------------------------ |
+| response          | Response from Finite State servers                 |
+| error             | Error message or details on why the action fails, if applicable       |
+| asset-version-url | Finite State binary analysis URL for the file uploaded |
+
 <!-- action-docs-outputs -->
 
 ## Set Up Workflow
@@ -72,7 +73,7 @@ on:
 
 You will also need to add your code into the workflow. The example only includes the required parameters. For more details, including optional parameters, please reference the **Inputs** section.
 
-**Example:**
+**Example:** 
 
 ```yaml
 uses: @FiniteStateInc/binary-scan@v1.0.0
@@ -149,7 +150,7 @@ jobs:
           version: ${{env.COMMIT_HASH}} # You can name this version anything you'd like. Here, we're using the git commit hash associated with the current run.
           file-path: # Put the same path from the "Upload binary generated file" step here
 
-      - name: Set response of binary quick scan
+      - name: Set response of binary scan
         if: steps.binary_scan.outcome=='success'
         id: set_response
         run: |
@@ -161,7 +162,7 @@ jobs:
       ERROR: ${{steps.binary_scan.outputs.error}}
       RESPONSE: ${{steps.binary_scan.outputs.response}}
 
-  show-link-as-comment: # This job generates a comment automatically in the PR in order to link to Finite State
+  show-link-as-comment: # This job generates a comment automatically in the PR in order to link to the Finite State Platform
     needs: finitestate-upload-binary
     runs-on: ubuntu-latest
     permissions:
@@ -171,7 +172,7 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: |
-            **Hello**, Finite State is analyzing your files! :rocket:.
+            **Hello**, Finite State is analyzing your files! :rocket:. 
             Please <a href="${{needs.finitestate-upload-binary.outputs.ASSET_VERSION_URL}}">click here</a> to see the progress of the analysis.
             <br />
 
@@ -179,4 +180,3 @@ jobs:
           message-failure: |
             **Hello**, We're sorry, but something went wrong. Please contact Finite State Support.
             <a href="https://platform.finitestate.io/">Finite State</a>
-```
