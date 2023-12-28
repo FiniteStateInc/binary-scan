@@ -4,6 +4,7 @@ from utils import (
     set_multiline_output,
     set_output,
     extract_asset_version,
+    generate_comment,
 )
 
 
