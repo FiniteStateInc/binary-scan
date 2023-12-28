@@ -24,6 +24,13 @@ inputs:
     description: Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. 
     required: true
     default: true
+  automatic-comment:
+    description: Defaults to false. If it is true, it will generate a comment in the PR with the link to the Asset version URL in Finite State.
+    required: false
+    default: false  
+  github-token:
+    description: Token used to generate comment in a pr. Only required if automatic-comment input is true.
+    required: false
   business-unit-id:
     description: '(optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.'
     required: false
