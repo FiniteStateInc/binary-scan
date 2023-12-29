@@ -32,6 +32,8 @@ By default, the asset version will be assigned the existing values for Business 
 | version                           | The name of the asset version that will be created                                                                                                  | `true`   | `string`   |         |
 | file-path                         | Local path of the file to be uploaded                                                                                                                   | `true`   | `string`   |         |
 | quick-scan                        | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `false`   | `boolean`   | `true`    |
+| automatic-comment | Defaults to false. If it is true, it will generate a comment in the PR with the link to the Asset version URL in the Finite State Platform. | `false`  | `boolean`   | `false` |
+| github-token | Token used to generate a comment in a the PR. Only required if automatic-comment input is true. | `false` | `string`   |  |
 | business-unit-id                  | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.                | `false`  | `string`   |         |
 | created-by-user-id                | (optional) ID of the user to be recorded as the 'Created By User' on the asset version. If not provided, the  version will adopt the existing value of the asset.            | `false`  | `string`   |         |
 | product-id                        | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable.              | `false`  | `string`   |         |
@@ -69,6 +71,18 @@ on:
     - cron: "0 0 * * *"
 ```
 
+If you want the PR to automatically generate a comment with the link to the results on the Finite State Platform, make sure to grant the necessary permissions in your workflow. This allows the action to post the comment using the GitHub workflow token.
+
+**Example**:
+
+```yaml
+name: Your workflow
+permissions:
+  pull-requests: write
+  contents: read
+
+```
+
 ## Usage of this Action
 
 You will also need to add your code into the workflow. The example only includes the required parameters. For more details, including optional parameters, please reference the **Inputs** section.
@@ -76,7 +90,7 @@ You will also need to add your code into the workflow. The example only includes
 **Example:** 
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v1.0.0
+uses: FiniteStateInc/binary-scan@v1.1.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -84,6 +98,24 @@ with:
   asset-id:  # The ID of the Asset associated with this scan
   version:   # The name of the new Asset Version that will be created
   file-path: # The path to the file that will be uploaded to the Finite State Platform
+```
+Using the previous code you won't get any comments in the pull request, but file will be upload to Finite State Platform and you get the link as output of the action.
+
+### Auto-Generation of PR Comments
+The following example includes optional parameters `github-token` and `automatic-comment` to auto-generate a comment in a pull request:
+
+**Example:**
+```yaml
+uses: FiniteStateInc/binary-scan@v1.1.0
+with:
+  finite-state-client-id: ${{ secrets.CLIENT_ID }}
+  finite-state-secret: ${{ secrets.CLIENT_SECRET }}
+  finite-state-organization-context:  ${{ secrets.ORGANIZATION_CONTEXT }}
+  asset-id:  # The ID of the Asset associated with this scan
+  version:   # The name of the new Asset Version that will be created
+  file-path: # The path to the file that will be uploaded to the Finite State Platform
+  github-token: ${{ secrets.GITHUB_TOKEN }} # Optional if you would like to generate the comment automatically in the PR
+  automatic-comment: true # Optional if you would like to generate the comment automatically in the PR
 ```
 
 ## Action Debugging
@@ -94,15 +126,15 @@ All details pertaining to the execution of the action will be recorded. You can 
 
 ## Extended Feature Example (Optional)
 
-In this section, we provide a code snippet for integrating this action into your existing workflow. Primarily, it uploads the file to the Finite State Platform for analysis. Once that process is complete, it uses the output of that job to automatically add a comment to the pull request, including a link pointing to the Finite State Binary Analysis URL for the uploaded file. You can customize the comment as desired or utilize the outputs of the action to construct your own.
-
-The job, named `show-link-as-comment`, is responsible for generating the comment using the output provided by the action.
+In this section, we provide a code snippet for integrating this action into your existing workflow. Primarily, it uploads the file to the Finite State Platform for analysis. Once that process is complete, it automatically add a comment to the pull request, including a link pointing to the Finite State Binary Analysis URL for the uploaded file. You can customize the comment as desired or utilize the outputs of the action to construct your own.
 
 Ensure to replace certain values, as indicated in the example workflow:
 
 ```yaml
 name: Build
-
+permissions:
+  pull-requests: write
+  contents: read
 on:
   pull_request:
     branches:
@@ -140,7 +172,7 @@ jobs:
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v1.0.0
+        uses: FiniteStateInc/binary-scan@v1.1.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
@@ -149,7 +181,8 @@ jobs:
           asset-id: ${{env.ASSET_ID}}
           version: ${{env.COMMIT_HASH}} # You can name this version anything you'd like. Here, we're using the git commit hash associated with the current run.
           file-path: # Put the same path from the "Upload binary generated file" step here
-
+          github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
+          automatic-comment: true # optional if you would like to generate the comment automatically in the PR
       - name: Set response of binary scan
         if: steps.binary_scan.outcome=='success'
         id: set_response
@@ -161,22 +194,3 @@ jobs:
       ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
       ERROR: ${{steps.binary_scan.outputs.error}}
       RESPONSE: ${{steps.binary_scan.outputs.response}}
-
-  show-link-as-comment: # This job generates a comment automatically in the PR in order to link to the Finite State Platform
-    needs: finitestate-upload-binary
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Add link to finitestate
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: |
-            **Hello**, Finite State is analyzing your files! :rocket:. 
-            Please <a href="${{needs.finitestate-upload-binary.outputs.ASSET_VERSION_URL}}">click here</a> to see the progress of the analysis.
-            <br />
-
-            <a href="https://platform.finitestate.io/">Finite State</a>
-          message-failure: |
-            **Hello**, We're sorry, but something went wrong. Please contact Finite State Support.
-            <a href="https://platform.finitestate.io/">Finite State</a>

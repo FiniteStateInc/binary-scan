@@ -3,7 +3,15 @@ import logging.handlers
 import os
 import finite_state_sdk
 import json
-from utils import extract_asset_version, set_multiline_output, set_output
+
+
+from utils import (
+    extract_asset_version,
+    set_multiline_output,
+    set_output,
+    generate_comment,
+    is_pull_request,
+)
 
 # configure a logger
 logger = logging.getLogger(__name__)
@@ -43,6 +51,8 @@ def create_and_upload_binary():
         INPUT_CREATED_BY_USER_ID = os.environ.get("INPUT_CREATED-BY-USER-ID")
         INPUT_PRODUCT_ID = os.environ.get("INPUT_PRODUCT-ID")
         INPUT_ARTIFACT_DESCRIPTION = os.environ.get("INPUT_ARTIFACT-DESCRIPTION")
+        INPUT_AUTOMATIC_COMMENT = os.environ.get("INPUT_AUTOMATIC-COMMENT") == "true"
+        INPUT_GITHUB_TOKEN = os.environ.get("INPUT_GITHUB-TOKEN")
     except KeyError:
         msg = f"Required inputs not available. Please, check required inputs definition"
         error = msg
@@ -53,60 +63,82 @@ def create_and_upload_binary():
     asset_version = ""
     logger.info(f"Starting - Create new asset version and upload binary")
 
-    # Authenticate
-    try:
-        logger.info(f"Starting - Authentication")
-        token = finite_state_sdk.get_auth_token(
-            INPUT_FINITE_STATE_CLIENT_ID, INPUT_FINITE_STATE_SECRET
-        )
-    except Exception as e:
-        msg = f"Caught an exception trying to get and auth token on Finite State: {e}"
+    if not INPUT_GITHUB_TOKEN and INPUT_AUTOMATIC_COMMENT:
+        msg = f"Caught an exception. The [Github Token] input is required when [Automatic comment] is enabled."
         error = msg
         logger.error(msg)
         logger.debug(e)
 
-    # Create new asset version an upload the binary:
     if error == None:
+        # Authenticate
         try:
-            response = finite_state_sdk.create_new_asset_version_and_upload_binary(
-                token,
-                INPUT_FINITE_STATE_ORGANIZATION_CONTEXT,
-                business_unit_id=INPUT_BUSINESS_UNIT_ID,
-                created_by_user_id=INPUT_CREATED_BY_USER_ID,
-                asset_id=INPUT_ASSET_ID,
-                version=INPUT_VERSION,
-                file_path=INPUT_FILE_PATH,
-                product_id=INPUT_PRODUCT_ID,
-                artifact_description=INPUT_ARTIFACT_DESCRIPTION,
-                quick_scan=INPUT_QUICK_SCAN == "true",
+            logger.info(f"Starting - Authentication")
+            token = finite_state_sdk.get_auth_token(
+                INPUT_FINITE_STATE_CLIENT_ID, INPUT_FINITE_STATE_SECRET
             )
-            asset_version = extract_asset_version(
-                response["launchBinaryUploadProcessing"]["key"]
-            )
-        except ValueError as e:
-            msg = f"Caught a ValueError trying to create new asset version and upload binary: {e}"
-            error = msg
-            logger.error(msg)
-            logger.debug(e)
-        except TypeError as e:
-            msg = f"Caught a TypeError trying to create new asset version and upload binary: {e}"
-            error = msg
-            logger.error(msg)
-            logger.debug(e)
         except Exception as e:
-            msg = f"Caught an exception trying to create new asset version and upload binary: {e}"
+            msg = (
+                f"Caught an exception trying to get and auth token on Finite State: {e}"
+            )
             error = msg
             logger.error(msg)
             logger.debug(e)
 
+        # Create new asset version an upload the binary:
         if error == None:
-            logger.info(f"File uploaded - Extracting asset version")
-            set_multiline_output("response", json.dumps(response, indent=4))
-            asset_version_url = "https://platform.finitestate.io/artifacts/{asset_id}/versions/{version}".format(
-                asset_id=INPUT_ASSET_ID, version=asset_version
-            )
-            set_output("asset-version-url", asset_version_url)
-            logger.info(f"Asset version URL: {asset_version_url}")
+            try:
+                response = finite_state_sdk.create_new_asset_version_and_upload_binary(
+                    token,
+                    INPUT_FINITE_STATE_ORGANIZATION_CONTEXT,
+                    business_unit_id=INPUT_BUSINESS_UNIT_ID,
+                    created_by_user_id=INPUT_CREATED_BY_USER_ID,
+                    asset_id=INPUT_ASSET_ID,
+                    version=INPUT_VERSION,
+                    file_path=INPUT_FILE_PATH,
+                    product_id=INPUT_PRODUCT_ID,
+                    artifact_description=INPUT_ARTIFACT_DESCRIPTION,
+                    quick_scan=INPUT_QUICK_SCAN == "true",
+                )
+                asset_version = extract_asset_version(
+                    response["launchBinaryUploadProcessing"]["key"]
+                )
+            except ValueError as e:
+                msg = f"Caught a ValueError trying to create new asset version and upload binary: {e}"
+                error = msg
+                logger.error(msg)
+                logger.debug(e)
+            except TypeError as e:
+                msg = f"Caught a TypeError trying to create new asset version and upload binary: {e}"
+                error = msg
+                logger.error(msg)
+                logger.debug(e)
+            except Exception as e:
+                msg = f"Caught an exception trying to create new asset version and upload binary: {e}"
+                error = msg
+                logger.error(msg)
+                logger.debug(e)
+
+            if error == None:
+                logger.info(f"File uploaded - Extracting asset version")
+                set_multiline_output("response", json.dumps(response, indent=4))
+                asset_version_url = "https://platform.finitestate.io/artifacts/{asset_id}/versions/{version}".format(
+                    asset_id=INPUT_ASSET_ID, version=asset_version
+                )
+                set_output("asset-version-url", asset_version_url)
+                logger.info(f"Asset version URL: {asset_version_url}")
+                if not INPUT_AUTOMATIC_COMMENT:
+                    logger.info(f"Automatic comment disabled")
+                else:
+                    if is_pull_request():
+                        logger.info(f"Automatic comment enabled. Generating comment...")
+                        generate_comment(INPUT_GITHUB_TOKEN, asset_version_url, logger)
+                    else:
+                        logger.info(
+                            f"Automatic comment enabled. But this isn't a pull request. Skip generating comment..."
+                        )
+            else:
+                set_multiline_output("error", error)
+                logger.error(error)
         else:
             set_multiline_output("error", error)
             logger.error(error)
