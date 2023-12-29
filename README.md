@@ -32,8 +32,8 @@ By default, the asset version will be assigned the existing values for Business 
 | version                           | The name of the asset version that will be created                                                                                                  | `true`   | `string`   |         |
 | file-path                         | Local path of the file to be uploaded                                                                                                                   | `true`   | `string`   |         |
 | quick-scan                        | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `false`   | `boolean`   | `true`    |
-| automatic-comment | Defaults to false. If it is true, it will generate a comment in the PR with the link to the Asset version URL in Finite State. | `false`  | `boolean`   | `false` |
-| github-token | Token used to generate comment in a pr. Only required if automatic-comment input is true. | `false` | `string`   |  |
+| automatic-comment | Defaults to false. If it is true, it will generate a comment in the PR with the link to the Asset version URL in the Finite State Platform. | `false`  | `boolean`   | `false` |
+| github-token | Token used to generate a comment in a the PR. Only required if automatic-comment input is true. | `false` | `string`   |  |
 | business-unit-id                  | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.                | `false`  | `string`   |         |
 | created-by-user-id                | (optional) ID of the user to be recorded as the 'Created By User' on the asset version. If not provided, the  version will adopt the existing value of the asset.            | `false`  | `string`   |         |
 | product-id                        | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable.              | `false`  | `string`   |         |
@@ -90,7 +90,7 @@ You will also need to add your code into the workflow. The example only includes
 **Example:** 
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v1.0.0
+uses: FiniteStateInc/binary-scan@v1.1.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -101,12 +101,12 @@ with:
 ```
 Using the previous code you won't get any comments in the pull request, but file will be upload to Finite State Platform and you get the link as output of the action.
 
-### Auto generation of comments
-The following example includes optional parameters `github-token` and `automatic-comment` to auto generate a comment in a pull request:
+### Auto-Generation of PR Comments
+The following example includes optional parameters `github-token` and `automatic-comment` to auto-generate a comment in a pull request:
 
 **Example:**
 ```yaml
-uses: FiniteStateInc/binary-scan@v1.0.0
+uses: FiniteStateInc/binary-scan@v1.1.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -114,8 +114,8 @@ with:
   asset-id:  # The ID of the Asset associated with this scan
   version:   # The name of the new Asset Version that will be created
   file-path: # The path to the file that will be uploaded to the Finite State Platform
-  github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
-  automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+  github-token: ${{ secrets.GITHUB_TOKEN }} # Optional if you would like to generate the comment automatically in the PR
+  automatic-comment: true # Optional if you would like to generate the comment automatically in the PR
 ```
 
 ## Action Debugging
@@ -172,7 +172,7 @@ jobs:
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v1.0.0
+        uses: FiniteStateInc/binary-scan@v1.1.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
