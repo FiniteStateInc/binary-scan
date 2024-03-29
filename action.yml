@@ -1,31 +1,29 @@
-name: 'Finite State Binary Scan'
+name: "Finite State Binary Scan"
 description:
-  'Upload a binary to the Finite State Platform to conduct a Quick Scan or full
-  analysis.'
+  "Upload a binary to the Finite State Platform to conduct a Quick Scan or full
+  analysis."
 branding:
-  icon: 'upload-cloud'
-  color: 'orange'
+  icon: "upload-cloud"
+  color: "orange"
 inputs:
   finite-state-client-id: # id of input
-    description: 'Finitestate API client ID.'
+    description: "Finitestate API client ID."
     required: true
   finite-state-secret:
-    description: 'Finitestate API secret.'
+    description: "Finitestate API secret."
     required: true
   finite-state-organization-context:
-    description:
-      'Organization context. This is provided by the Finite State API
+    description: 'Organization context. This is provided by the Finite State API
       management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".'
     required: true
   asset-id:
-    description:
-      'Asset ID for the asset that the new asset version will belong to.'
+    description: "Asset ID for the asset that the new asset version will belong to."
     required: true
   version:
-    description: 'The name of the asset version that will be created.'
+    description: "The name of the asset version that will be created."
     required: true
   file-path:
-    description: 'Local path of the file to be uploaded.'
+    description: "Local path of the file to be uploaded."
     required: true
   quick-scan:
     description:
@@ -47,9 +45,9 @@ inputs:
     required: false
   business-unit-id:
     description:
-      '(optional) ID of the business unit that the asset version will belong to.
+      "(optional) ID of the business unit that the asset version will belong to.
       If not provided, the asset version will adopt the existing business unit
-      of the asset.'
+      of the asset."
     required: false
   created-by-user-id:
     description:
@@ -59,9 +57,9 @@ inputs:
     required: false
   product-id:
     description:
-      '(optional) ID of the product that the asset version will belong to. If
+      "(optional) ID of the product that the asset version will belong to. If
       not provided, the existing product for the asset will be used, if
-      applicable.'
+      applicable."
     required: false
   artifact-description:
     description:
@@ -70,12 +68,11 @@ inputs:
     required: false
 outputs:
   response:
-    description: 'Response from Finite State servers.'
+    description: "Response from Finite State servers."
   error:
-    description:
-      'Error message or details on why the action fails, if applicable.'
+    description: "Error message or details on why the action fails, if applicable."
   asset-version-url:
-    description: 'Finite State binary analysis URL for the file uploaded.'
+    description: "Finite State binary analysis URL for the file uploaded."
 
 runs:
   using: node20
