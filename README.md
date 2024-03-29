@@ -1,196 +1,229 @@
-# [Finite State](https://finitestate.io) `binary-scan` Action
+# Create a GitHub Action Using TypeScript
 
-![Finite state logo](./imgs/FS-Logo.png)
-[finitestate.io](https://finitestate.io)
+[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
+![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
+[![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
+[![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
+[![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
-<!-- action-docs-description -->
+Use this template to bootstrap the creation of a TypeScript action. :rocket:
 
-## Description
+This template includes compilation support, tests, a validation workflow,
+publishing, and versioning guidance.
 
-The Finite State `binary-scan` GitHub Action allows you to easily integrate the Finite State Platform into your CI/CD workflows.
+If you are new, there's also a simpler introduction in the
+[Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
 
-Following the steps below will: 
-* Upload the file to the Finite State platform
-* Create a new version of the configured asset
-* Conduct a Quick Scan binary analysis on the uploaded file
-* Associate the results to the asset version
+## Create Your Own Action
 
-By default, the asset version will be assigned the existing values for Business Unit and Created By User. If you need to change these, you can provide the IDs for them.
+To create your own action, you can use this repository as a template! Just
+follow the below instructions:
 
-<!-- action-docs-description -->
+1. Click the **Use this template** button at the top of the repository
+1. Select **Create a new repository**
+1. Select an owner and name for your new repository
+1. Click **Create repository**
+1. Clone your new repository
 
-<!-- action-docs-inputs -->
+> [!IMPORTANT]
+>
+> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
+> details on how to use this file, see
+> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
 
-## Inputs
+## Initial Setup
 
-| parameter                         | description                                                                                                                                         | required | type | default |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------- |
-| finite-state-client-id            | Finite State API client ID                                                                                                                           | `true`   | `string`   |         |
-| finite-state-secret               | Finite State API secret                                                                                                                              | `true`   | `string`   |         |
-| finite-state-organization-context | The Organization-Context should have been provided to you by your Finite State representative and looks like `xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`                    | `true`   | `string`   |         |
-| asset-id                          | Asset ID for the asset that the new  asset version will belong to                                                                                                             | `true`   | `string`   |         |
-| version                           | The name of the asset version that will be created                                                                                                  | `true`   | `string`   |         |
-| file-path                         | Local path of the file to be uploaded                                                                                                                   | `true`   | `string`   |         |
-| quick-scan                        | Boolean that uploads the file for quick scan when true. Defaults to true (Quick Scan). For details about the contents of the Quick Scan vs. the Full Scan, please see the API documentation. | `false`   | `boolean`   | `true`    |
-| automatic-comment | Defaults to false. If it is true, it will generate a comment in the PR with the link to the Asset version URL in the Finite State Platform. | `false`  | `boolean`   | `false` |
-| github-token | Token used to generate a comment in a the PR. Only required if automatic-comment input is true. | `false` | `string`   |  |
-| business-unit-id                  | (optional) ID of the business unit that the asset version will belong to. If not provided, the asset version will adopt the existing business unit of the asset.                | `false`  | `string`   |         |
-| created-by-user-id                | (optional) ID of the user to be recorded as the 'Created By User' on the asset version. If not provided, the  version will adopt the existing value of the asset.            | `false`  | `string`   |         |
-| product-id                        | (optional) ID of the product that the asset version will belong to. If not provided, the existing product for the asset will be used, if applicable.              | `false`  | `string`   |         |
-| artifact-description              | (optional) Description of the artifact. If not provided, the default is "Firmware Binary".                                                          | `false`  | `string`   |         |
+After you've cloned the repository to your local machine or codespace, you'll
+need to perform some initial setup steps before you can develop your action.
 
-<!-- action-docs-inputs -->
+> [!NOTE]
+>
+> You'll need to have a reasonably modern version of
+> [Node.js](https://nodejs.org) handy (20.x or later should work!). If you are
+> using a version manager like [`nodenv`](https://github.com/nodenv/nodenv) or
+> [`nvm`](https://github.com/nvm-sh/nvm), this template has a `.node-version`
+> file at the root of the repository that will be used to automatically switch
+> to the correct version when you `cd` into the repository. Additionally, this
+> `.node-version` file is used by GitHub Actions in any `actions/setup-node`
+> actions.
 
-<!-- action-docs-outputs -->
+1. :hammer_and_wrench: Install the dependencies
 
-## Outputs
+   ```bash
+   npm install
+   ```
 
-| parameter         | description                                            |
-| ----------------- | ------------------------------------------------------ |
-| response          | Response from Finite State servers                 |
-| error             | Error message or details on why the action fails, if applicable       |
-| asset-version-url | URL to view your results in the Finite State Platform |
+1. :building_construction: Package the TypeScript for distribution
 
-<!-- action-docs-outputs -->
+   ```bash
+   npm run bundle
+   ```
 
-## Set Up Workflow
+1. :white_check_mark: Run the tests
 
-To start using this action, you must generate a job within a GitHub Workflow. You can either establish a [new GitHub Workflow](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions) or use an existing one that aligns with your use case.
+   ```bash
+   $ npm test
 
-After selecting a GitHub Workflow, proceed to [customize the events](https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows) that will activate the workflow, such as pull requests or scheduled events:
+   PASS  ./index.test.js
+     ✓ throws invalid number (3ms)
+     ✓ wait 500 ms (504ms)
+     ✓ test runs (95ms)
 
-**Example**:
+   ...
+   ```
+
+## Update the Action Metadata
+
+The [`action.yml`](action.yml) file defines metadata about your action, such as
+input(s) and output(s). For details about this file, see
+[Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions).
+
+When you copy this repository, update `action.yml` with the name, description,
+inputs, and outputs for your action.
+
+## Update the Action Code
+
+The [`src/`](./src/) directory is the heart of your action! This contains the
+source code that will be run when your action is invoked. You can replace the
+contents of this directory with your own code.
+
+There are a few things to keep in mind when writing your action code:
+
+- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
+  In `main.ts`, you will see that the action is run in an `async` function.
+
+  ```javascript
+  import * as core from '@actions/core'
+  //...
+
+  async function run() {
+    try {
+      //...
+    } catch (error) {
+      core.setFailed(error.message)
+    }
+  }
+  ```
+
+  For more information about the GitHub Actions toolkit, see the
+  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
+
+So, what are you waiting for? Go ahead and start customizing your action!
+
+1. Create a new branch
+
+   ```bash
+   git checkout -b releases/v1
+   ```
+
+1. Replace the contents of `src/` with your action code
+1. Add tests to `__tests__/` for your source code
+1. Format, test, and build the action
+
+   ```bash
+   npm run all
+   ```
+
+   > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
+   > to build the final JavaScript action code with all dependencies included.
+   > If you do not run this step, your action will not work correctly when it is
+   > used in a workflow. This step also includes the `--license` option for
+   > `ncc`, which will create a license file for all of the production node
+   > modules used in your project.
+
+1. Commit your changes
+
+   ```bash
+   git add .
+   git commit -m "My first action is ready!"
+   ```
+
+1. Push them to your repository
+
+   ```bash
+   git push -u origin releases/v1
+   ```
+
+1. Create a pull request and get feedback on your action
+1. Merge the pull request into the `main` branch
+
+Your action is now published! :rocket:
+
+For information about versioning your action, see
+[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
+in the GitHub Actions toolkit.
+
+## Validate the Action
+
+You can now validate the action by referencing it in a workflow file. For
+example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
+action in the same repository.
 
 ```yaml
-name: Your workflow
-on:
-  pull_request:
-    branches:
-      - main
-  schedule:
-    - cron: "0 0 * * *"
+steps:
+  - name: Checkout
+    id: checkout
+    uses: actions/checkout@v4
+
+  - name: Test Local Action
+    id: test-action
+    uses: ./
+    with:
+      milliseconds: 1000
+
+  - name: Print Output
+    id: output
+    run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
-If you want the PR to automatically generate a comment with the link to the results on the Finite State Platform, make sure to grant the necessary permissions in your workflow. This allows the action to post the comment using the GitHub workflow token.
+For example workflow runs, check out the
+[Actions tab](https://github.com/actions/typescript-action/actions)! :rocket:
 
-**Example**:
+## Usage
+
+After testing, you can create version tag(s) that developers can use to
+reference different stable versions of your action. For more information, see
+[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
+in the GitHub Actions toolkit.
+
+To include the action in a workflow in another repository, you can use the
+`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
+hash.
 
 ```yaml
-name: Your workflow
-permissions:
-  pull-requests: write
-  contents: read
+steps:
+  - name: Checkout
+    id: checkout
+    uses: actions/checkout@v4
 
+  - name: Test Local Action
+    id: test-action
+    uses: actions/typescript-action@v1 # Commit with the `v1` tag
+    with:
+      milliseconds: 1000
+
+  - name: Print Output
+    id: output
+    run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
-## Usage of this Action
+## Publishing a New Release
 
-You will also need to add your code into the workflow. The example only includes the required parameters. For more details, including optional parameters, please reference the **Inputs** section.
+This project includes a helper script, [`script/release`](./script/release)
+designed to streamline the process of tagging and pushing new releases for
+GitHub Actions.
 
-**Example:** 
+GitHub Actions allows users to select a specific version of the action to use,
+based on release tags. This script simplifies this process by performing the
+following steps:
 
-```yaml
-uses: FiniteStateInc/binary-scan@v1.1.0
-with:
-  finite-state-client-id: ${{ secrets.CLIENT_ID }}
-  finite-state-secret: ${{ secrets.CLIENT_SECRET }}
-  finite-state-organization-context:  ${{ secrets.ORGANIZATION_CONTEXT }}
-  asset-id:  # The ID of the Asset associated with this scan
-  version:   # The name of the new Asset Version that will be created
-  file-path: # The path to the file that will be uploaded to the Finite State Platform
-```
-Using the previous code you won't get any comments in the pull request, but file will be upload to Finite State Platform and you get the link as output of the action.
-
-### Auto-Generation of PR Comments
-The following example includes optional parameters `github-token` and `automatic-comment` to auto-generate a comment in a pull request:
-
-**Example:**
-```yaml
-uses: FiniteStateInc/binary-scan@v1.1.0
-with:
-  finite-state-client-id: ${{ secrets.CLIENT_ID }}
-  finite-state-secret: ${{ secrets.CLIENT_SECRET }}
-  finite-state-organization-context:  ${{ secrets.ORGANIZATION_CONTEXT }}
-  asset-id:  # The ID of the Asset associated with this scan
-  version:   # The name of the new Asset Version that will be created
-  file-path: # The path to the file that will be uploaded to the Finite State Platform
-  github-token: ${{ secrets.GITHUB_TOKEN }} # Optional if you would like to generate the comment automatically in the PR
-  automatic-comment: true # Optional if you would like to generate the comment automatically in the PR
-```
-
-## Action Debugging
-
-All details pertaining to the execution of the action will be recorded. You can review this information in the workflow execution logs, which is a helpful starting point if you encounter any errors during the action's run.
-
-![logging example](./imgs/debug_info.png)
-
-## Extended Feature Example (Optional)
-
-In this section, we provide a code snippet for integrating this action into your existing workflow. Primarily, it uploads the file to the Finite State Platform for analysis. Once that process is complete, it automatically add a comment to the pull request, including a link pointing to the Finite State Binary Analysis URL for the uploaded file. You can customize the comment as desired or utilize the outputs of the action to construct your own.
-
-Ensure to replace certain values, as indicated in the example workflow:
-
-```yaml
-name: Build
-permissions:
-  pull-requests: write
-  contents: read
-on:
-  pull_request:
-    branches:
-      - main
-  schedule:
-    - cron: "0 0 * * *" # At 00:00 every day
-
-env:
-  CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-  ORGANIZATION_CONTEXT: ${{ secrets.ORGANIZATION_CONTEXT }}
-  ASSET_ID: # Complete with your Asset ID
-
-jobs:
-  finitestate-upload-binary:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo content
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      # - name: (Potentially) Build a system / firmware image
-      # Uncomment previous line and Put the build steps here (which likely already exist) based on the project
-
-      - name: Upload binary generated file
-        uses: actions/upload-artifact@v3
-        with:
-          name: binary-artifact
-          path: # Put the path to your binary file generated in the previous step here
-
-      - name: Get commit hash to use as version # Optional step to auto tag the version
-        id: commit_hash
-        run: |
-          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v1.1.0
-        id: binary_scan
-        with:
-          finite-state-client-id: ${{ secrets.CLIENT_ID }}
-          finite-state-secret: ${{ secrets.CLIENT_SECRET }}
-          finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
-          asset-id: ${{env.ASSET_ID}}
-          version: ${{env.COMMIT_HASH}} # You can name this version anything you'd like. Here, we're using the git commit hash associated with the current run.
-          file-path: # Put the same path from the "Upload binary generated file" step here
-          github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
-          automatic-comment: true # optional if you would like to generate the comment automatically in the PR
-      - name: Set response of binary scan
-        if: steps.binary_scan.outcome=='success'
-        id: set_response
-        run: |
-          echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
-          echo Response: "${{steps.binary_scan.outputs.response}}"
-          echo Error: "${{steps.binary_scan.outputs.error}}"
-    outputs:
-      ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
-      ERROR: ${{steps.binary_scan.outputs.error}}
-      RESPONSE: ${{steps.binary_scan.outputs.response}}
+1. **Retrieving the latest release tag:** The script starts by fetching the most
+   recent release tag by looking at the local data available in your repository.
+1. **Prompting for a new release tag:** The user is then prompted to enter a new
+   release tag. To assist with this, the script displays the latest release tag
+   and provides a regular expression to validate the format of the new tag.
+1. **Tagging the new release:** Once a valid new tag is entered, the script tags
+   the new release.
+1. **Pushing the new tag to the remote:** Finally, the script pushes the new tag
+   to the remote repository. From here, you will need to create a new release in
+   GitHub and users can easily reference the new tag in their workflows.
