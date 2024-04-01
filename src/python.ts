@@ -7,7 +7,7 @@ export async function getInputs(): Promise<object> {
     INPUT_FINITE_STATE_CLIENT_ID: core.getInput('FINITE-STATE-CLIENT-ID'),
     INPUT_FINITE_STATE_SECRET: core.getInput('FINITE-STATE-SECRET'),
     INPUT_FINITE_STATE_ORGANIZATION_CONTEXT: core.getInput(
-      'FINITE-STATE-ORGANIZATION-CONTEXT',
+      'FINITE-STATE-ORGANIZATION-CONTEXT`
     ),
     INPUT_ASSET_ID: core.getInput('ASSET-ID'),
     INPUT_VERSION: core.getInput('VERSION'),
@@ -38,12 +38,12 @@ export async function runPython(): Promise<string[]> {
     env: { ...process.env, ...envVariables }
   })
   const response: string[] = []
-  pythonProcess.stdout.on('data', (data) => {
+  pythonProcess.stdout.on(`data`, (data) => {
     response.push(data.toString())
     core.notice(data.toString())
   })
 
-  pythonProcess.stderr.on('data', (data) => {
+  pythonProcess.stderr.on(`data`, (data) => {
     core.notice(data.toString())
     response.push(data.toString())
   })

@@ -27,19 +27,19 @@ describe('Main Action', () => {
 
     expect(core.debug).toHaveBeenCalledWith(
       expect.stringMatching(/^Starting execute python upload binary.*/)
-    );
+    )
     expect(core.debug).toHaveBeenCalledWith(
       expect.stringMatching(/^Finish execute python upload binary.*/)
-    );
+    )
 
-    expect(core.setFailed).not.toHaveBeenCalled();
-  });
+    expect(core.setFailed).not.toHaveBeenCalled()
+  })
 
   it('should handle errors and fail the workflow', async () => {
     // Mock runPython to reject with an error
     pythonMocked.runPython.mockRejectedValue(
       new Error('Python execution failed'),
-    );
+    )
     await run()
 
     // Assert that core.debug was called with the expected error message

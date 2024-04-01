@@ -20,8 +20,8 @@ jest.mock('../src/python', () => {
       INPUT_PRODUCT_ID: 'product_id',
       INPUT_ARTIFACT_DESCRIPTION: 'artifact_description',
       INPUT_AUTOMATIC_COMMENT: 'automatic_comment',
-      INPUT_GITHUB_TOKEN: 'github_token',
-    }),
+      INPUT_GITHUB_TOKEN: 'github_token'
+    })
   }
 })
 
@@ -40,7 +40,7 @@ describe('main', () => {
           if (event === 'data') {
             callback('Mock stdout data')
           }
-        },
+        }
       )
     const mockStderrOn = jest
       .fn()
@@ -49,7 +49,7 @@ describe('main', () => {
           if (event === 'data') {
             callback('Mock stderr data')
           }
-        },
+        }
       )
 
     // Mock spawn to return a mock ChildProcess with mocked stdout and stderr
@@ -64,8 +64,8 @@ describe('main', () => {
       expect.arrayContaining([expect.stringContaining('upload_binary.py')]),
       expect.objectContaining({
         shell: true,
-        env: expect.any(Object), // Adjust as needed for your test
-      }),
+        env: expect.any(Object) // Adjust as needed for your test
+      })
     )
 
     expect(mockStdoutOn).toHaveBeenCalled()
