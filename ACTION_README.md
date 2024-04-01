@@ -22,9 +22,14 @@ Unit and Created By User. If you need to change these, you can provide the IDs
 for them.
 
 > [!WARNING]  
-> Warning: Ensure the GitHub Actions runner environment supports both Node.js and Python when running workflows that include JavaScript and Python scripts. Using an incompatible runner environment may result in errors or unexpected behavior during script execution.
+> Warning: Ensure the GitHub Actions runner environment supports both Node.js
+> and Python when running workflows that include JavaScript and Python scripts.
+> Using an incompatible runner environment may result in errors or unexpected
+> behavior during script execution.
 >
-> To avoid issues, consider using a GitHub-hosted runner image like 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with both Node.js and Python.
+> To avoid issues, consider using a GitHub-hosted runner image like
+> 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with both
+> Node.js and Python.
 
 <!-- action-docs-description -->
 
