@@ -103,7 +103,7 @@ reference the **Inputs** section.
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v1.1.0
+uses: FiniteStateInc/binary-scan@v2.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -192,20 +192,15 @@ jobs:
           name: binary-artifact
           path: # Put the path to your binary file generated in the previous step here
 
-      - name: Get commit hash to use as version # Optional step to auto tag the version
-        id: commit_hash
-        run: |
-          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v1.1.0
+        uses: FiniteStateInc/binary-scan@v2.0.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
           finite-state-secret: ${{ secrets.CLIENT_SECRET }}
           finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
           asset-id: ${{env.ASSET_ID}}
-          version: ${{env.COMMIT_HASH}} # You can name this version anything you'd like. Here, we're using the git commit hash associated with the current run.
+          version: ${{github.sha}} # You can name this version anything you'd like. Here, we're using the git commit hash associated with the current run.
           file-path: # Put the same path from the "Upload binary generated file" step here
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
           automatic-comment: true # optional if you would like to generate the comment automatically in the PR

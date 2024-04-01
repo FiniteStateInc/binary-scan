@@ -1,21 +1,20 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
-  "author": "",
-  "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "name": "binary-scan-github",
+  "description": "Binary Scan Github Actino",
+  "version": "2.0.0",
+  "author": "christianpfarher@finitestate.io",
+  "private": false,
+  "homepage": "https://github.com/FiniteStateInc/binary-scan",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/FiniteStateInc/binary-scan"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/FiniteStateInc/binary-scan/issues"
   },
   "keywords": [
-    "actions",
-    "node",
-    "setup"
+    "binary-scan",
+    "finitestate"
   ],
   "exports": {
     ".": "./dist/index.js"
