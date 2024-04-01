@@ -1,11 +1,8 @@
 import unittest
-from unittest.mock import patch, mock_open
-from utils import (
-    set_multiline_output,
-    set_output,
-    extract_asset_version,
-    generate_comment,
-)
+from unittest.mock import mock_open, patch
+
+from utils import (extract_asset_version, generate_comment,
+                   set_multiline_output, set_output)
 
 
 class TestUtilsFunctions(unittest.TestCase):

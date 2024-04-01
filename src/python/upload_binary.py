@@ -1,17 +1,12 @@
+import json
 import logging
 import logging.handlers
 import os
+
 import finite_state_sdk
-import json
 
-
-from utils import (
-    extract_asset_version,
-    set_multiline_output,
-    set_output,
-    generate_comment,
-    is_pull_request,
-)
+from utils import (extract_asset_version, generate_comment, is_pull_request,
+                   set_multiline_output, set_output)
 
 # configure a logger
 logger = logging.getLogger(__name__)

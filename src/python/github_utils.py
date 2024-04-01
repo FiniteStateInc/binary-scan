@@ -1,7 +1,8 @@
-import os
-import requests
 import json
+import os
 import re
+
+import requests
 
 
 def extract_pull_request_number():
