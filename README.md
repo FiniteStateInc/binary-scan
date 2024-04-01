@@ -1,12 +1,12 @@
-# Binary Scan Github Action
+# Binary Scan GitHub Action
 
-This JS action for github was created using this repo as template:
+This JS action for GitHub was created using this repository as template:
 [Create a GitHub Action Using TypeScript](https://github.com/actions/typescript-action).
 
 This template includes compilation support, tests, a validation workflow,
 publishing, and versioning guidance.
 
-## How to use the action in a Github Workflow
+## How to use the action in a GitHub Workflow
 
 If you would like to use the action, go to the action in the marketplace and
 follow the documentation:
