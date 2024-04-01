@@ -1,20 +1,22 @@
 # Binary Scan Github Action
 
-This JS action for github was created using this repo as template: [Create a GitHub Action Using TypeScript](https://github.com/actions/typescript-action).
+This JS action for github was created using this repo as template:
+[Create a GitHub Action Using TypeScript](https://github.com/actions/typescript-action).
 
 This template includes compilation support, tests, a validation workflow,
 publishing, and versioning guidance.
 
 ## How to use the action in a Github Workflow
 
-If you would like to use the action, go to the action in the marketplace and follow the documentation: [Finite state binary scan](https://github.com/marketplace/actions/finite-state-binary-scan)
+If you would like to use the action, go to the action in the marketplace and
+follow the documentation:
+[Finite state binary scan](https://github.com/marketplace/actions/finite-state-binary-scan)
 
-
-> [!NOTE]
-> As it was mentioned you don't need to continue reading this Readme if you would like to just use the action. 
+> [!NOTE] As it was mentioned you don't need to continue reading this Readme if
+> you would like to just use the action.
 >
-> The following documentation make sense if you are a developer of this action and you would like to customize or change the behavior of them.
-
+> The following documentation make sense if you are a developer of this action
+> and you would like to customize or change the behavior of them.
 
 ## Initial Setup
 
@@ -60,7 +62,6 @@ need to perform some initial setup steps before you can develop your action.
 The [`action.yml`](action.yml) file defines metadata about your action, such as
 input(s) and output(s). For details about this file, see
 [Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions).
-
 
 ## Update the Action Code
 
@@ -142,7 +143,7 @@ steps:
   - name: Finite State Binary Scan
     id: binary_scan
     uses: FiniteStateInc/binary-scan@v2.0.0
-            
+
     with:
       finite-state-client-id: ${{ secrets.CLIENT_ID }}
       finite-state-secret: ${{ secrets.CLIENT_SECRET }}
