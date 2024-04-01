@@ -55,7 +55,7 @@ describe('main', () => {
     // Mock spawn to return a mock ChildProcess with mocked stdout and stderr
     const mockSpawn = jest.spyOn(cp, 'spawn').mockReturnValue({
       stdout: { on: mockStdoutOn },
-      stderr: { on: mockStderrOn },
+      stderr: { on: mockStderrOn }
     } as unknown as cp.ChildProcess) // Cast to ChildProcess
 
     await runPython()

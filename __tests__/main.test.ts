@@ -26,10 +26,10 @@ describe('Main Action', () => {
     await run()
 
     expect(core.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/^Starting execute python upload binary.*/),
+      expect.stringMatching(/^Starting execute python upload binary.*/)
     );
     expect(core.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/^Finish execute python upload binary.*/),
+      expect.stringMatching(/^Finish execute python upload binary.*/)
     );
 
     expect(core.setFailed).not.toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe('Main Action', () => {
 
     // Assert that core.debug was called with the expected error message
     expect(debugMock).toHaveBeenCalledWith(
-      expect.stringContaining('Error executing python upload binary'),
+      expect.stringContaining('Error executing python upload binary')
     )
 
     // Assert that core.setFailed was called with the correct error message
