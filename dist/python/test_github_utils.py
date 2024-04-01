@@ -1,13 +1,10 @@
+import os
 import unittest
 from unittest.mock import patch
-import os
-from github_utils import (
-    extract_pull_request_number,
-    extract_repository_owner,
-    extract_repository_name,
-    is_pull_request,
-    comment_on_pr,
-)
+
+from github_utils import (comment_on_pr, extract_pull_request_number,
+                          extract_repository_name, extract_repository_owner,
+                          is_pull_request)
 
 
 class TestGithubUtils(unittest.TestCase):

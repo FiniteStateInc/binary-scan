@@ -1,13 +1,10 @@
-import uuid
-import re
 import os
-from github_utils import (
-    extract_pull_request_number,
-    extract_repository_owner,
-    extract_repository_name,
-    comment_on_pr,
-    is_pull_request,
-)
+import re
+import uuid
+
+from github_utils import (comment_on_pr, extract_pull_request_number,
+                          extract_repository_name, extract_repository_owner,
+                          is_pull_request)
 
 
 def set_multiline_output(name, value):

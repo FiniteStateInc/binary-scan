@@ -38,7 +38,7 @@ describe('Main Action', () => {
   it('should handle errors and fail the workflow', async () => {
     // Mock runPython to reject with an error
     pythonMocked.runPython.mockRejectedValue(
-      new Error('Python execution failed'),
+      new Error('Python execution failed')
     )
     await run()
 
