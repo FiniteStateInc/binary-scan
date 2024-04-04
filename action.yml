@@ -80,5 +80,3 @@ outputs:
 runs:
   using: node20
   main: dist/index.js
-
-readme: 'ACTION_README.md'
