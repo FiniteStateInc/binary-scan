@@ -12,7 +12,9 @@ If you would like to use the action, go to the action in the marketplace and
 follow the documentation:
 [Finite state binary scan](https://github.com/marketplace/actions/finite-state-binary-scan)
 
-> [!NOTE] As it was mentioned you don't need to continue reading this Readme if
+> [!NOTE]
+>
+> As it was mentioned you don't need to continue reading this Readme if
 > you would like to just use the action.
 >
 > The following documentation make sense if you are a developer of this action
