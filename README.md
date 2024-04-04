@@ -14,8 +14,8 @@ follow the documentation:
 
 > [!NOTE]
 >
-> As it was mentioned you don't need to continue reading this Readme if
-> you would like to just use the action.
+> As it was mentioned you don't need to continue reading this Readme if you
+> would like to just use the action.
 >
 > The following documentation make sense if you are a developer of this action
 > and you would like to customize or change the behavior of them.
