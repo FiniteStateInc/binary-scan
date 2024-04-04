@@ -1,0 +1,84 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+  contents: read
+
+env:
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  ORGANIZATION_CONTEXT: ${{ secrets.ORGANIZATION_CONTEXT }}
+  ASSET_ID: 2720805263
+
+jobs:
+  test-typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Dependencies
+        id: npm-ci
+        run: npm ci
+
+      - name: Check Format
+        id: npm-format-check
+        run: npm run format:check
+
+      - name: Lint
+        id: npm-lint
+        run: npm run lint
+
+      - name: Test
+        id: npm-ci-test
+        run: npm run ci-test
+
+  binary_scan:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Binary Scan
+        id: binary_scan
+        uses: ./
+        with:
+          finite-state-client-id: ${{ secrets.CLIENT_ID }}
+          finite-state-secret: ${{ secrets.CLIENT_SECRET }}
+          finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
+          asset-id: ${{env.ASSET_ID}}
+          version: ${{ github.sha }}
+          file-path: ./somefile.bin # Put the same path from the "Upload binary generated file" step here
+          github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
+          automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+
+      - name: Set response of binary scan
+        if: steps.binary_scan.outcome=='success'
+        id: set_response
+        run: |
+          echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+          echo Response: "${{steps.binary_scan.outputs.response}}"
+          echo Error: "${{steps.binary_scan.outputs.error}}"
