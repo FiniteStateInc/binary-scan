@@ -30,7 +30,7 @@ for them.
 >
 > To avoid issues, consider using a GitHub-hosted runner image like
 > 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with both
-> Node.js and Python.
+> Node.js and Python required versions.
 
 <!-- action-docs-description -->
 
