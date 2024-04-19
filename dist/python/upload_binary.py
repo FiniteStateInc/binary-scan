@@ -98,7 +98,7 @@ def create_and_upload_binary():
                     product_id=INPUT_PRODUCT_ID,
                     artifact_description=INPUT_ARTIFACT_DESCRIPTION,
                     quick_scan=INPUT_QUICK_SCAN == "true",
-                    upload_method=finite_state_sdk.UploadMethod.GITHUB_INTEGRATION
+                    upload_method=finite_state_sdk.UploadMethod.GITHUB_INTEGRATION,
                 )
                 asset_version = extract_asset_version(
                     response["launchBinaryUploadProcessing"]["key"]
