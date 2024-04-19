@@ -7,7 +7,6 @@ from github_utils import (
     extract_pull_request_number,
     extract_repository_name,
     extract_repository_owner,
-    is_pull_request,
 )
 
 
