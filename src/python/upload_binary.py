@@ -8,9 +8,11 @@ import finite_state_sdk
 from utils import (
     extract_asset_version,
     generate_comment,
-    is_pull_request,
     set_multiline_output,
     set_output,
+)
+from github_utils import (
+    is_pull_request,
 )
 
 # configure a logger
