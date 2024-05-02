@@ -8,9 +8,11 @@ import finite_state_sdk
 from utils import (
     extract_asset_version,
     generate_comment,
-    is_pull_request,
     set_multiline_output,
     set_output,
+)
+from github_utils import (
+    is_pull_request,
 )
 
 # configure a logger
@@ -54,25 +56,24 @@ def create_and_upload_binary():
         INPUT_AUTOMATIC_COMMENT = os.environ.get("INPUT_AUTOMATIC_COMMENT") == "true"
         INPUT_GITHUB_TOKEN = os.environ.get("INPUT_GITHUB_TOKEN")
     except KeyError:
-        msg = f"Required inputs not available. Please, check required inputs definition"
+        msg = "Required inputs not available. Please, check required inputs definition"
         error = msg
         logger.error(msg)
         raise
 
     error = None
     asset_version = ""
-    logger.info(f"Starting - Create new asset version and upload binary")
+    logger.info("Starting - Create new asset version and upload binary")
 
     if not INPUT_GITHUB_TOKEN and INPUT_AUTOMATIC_COMMENT:
-        msg = f"Caught an exception. The [Github Token] input is required when [Automatic comment] is enabled."
+        msg = "Caught an exception. The [Github Token] input is required when [Automatic comment] is enabled."
         error = msg
         logger.error(msg)
-        logger.debug(e)
 
-    if error == None:
+    if error is None:
         # Authenticate
         try:
-            logger.info(f"Starting - Authentication")
+            logger.info("Starting - Authentication")
             token = finite_state_sdk.get_auth_token(
                 INPUT_FINITE_STATE_CLIENT_ID, INPUT_FINITE_STATE_SECRET
             )
@@ -85,7 +86,7 @@ def create_and_upload_binary():
             logger.debug(e)
 
         # Create new asset version an upload the binary:
-        if error == None:
+        if error is None:
             try:
                 response = finite_state_sdk.create_new_asset_version_and_upload_binary(
                     token,
@@ -98,6 +99,7 @@ def create_and_upload_binary():
                     product_id=INPUT_PRODUCT_ID,
                     artifact_description=INPUT_ARTIFACT_DESCRIPTION,
                     quick_scan=INPUT_QUICK_SCAN == "true",
+                    upload_method=finite_state_sdk.UploadMethod.GITHUB_INTEGRATION,
                 )
                 asset_version = extract_asset_version(
                     response["launchBinaryUploadProcessing"]["key"]
@@ -118,8 +120,8 @@ def create_and_upload_binary():
                 logger.error(msg)
                 logger.debug(e)
 
-            if error == None:
-                logger.info(f"File uploaded - Extracting asset version")
+            if error is None:
+                logger.info("File uploaded - Extracting asset version")
                 set_multiline_output("response", json.dumps(response, indent=4))
                 asset_version_url = "https://platform.finitestate.io/artifacts/{asset_id}/versions/{version}".format(
                     asset_id=INPUT_ASSET_ID, version=asset_version
@@ -127,14 +129,14 @@ def create_and_upload_binary():
                 set_output("asset-version-url", asset_version_url)
                 logger.info(f"Asset version URL: {asset_version_url}")
                 if not INPUT_AUTOMATIC_COMMENT:
-                    logger.info(f"Automatic comment disabled")
+                    logger.info("Automatic comment disabled")
                 else:
                     if is_pull_request():
-                        logger.info(f"Automatic comment enabled. Generating comment...")
+                        logger.info("Automatic comment enabled. Generating comment...")
                         generate_comment(INPUT_GITHUB_TOKEN, asset_version_url, logger)
                     else:
                         logger.info(
-                            f"Automatic comment enabled. But this isn't a pull request. Skip generating comment..."
+                            "Automatic comment enabled. But this isn't a pull request. Skip generating comment..."
                         )
             else:
                 set_multiline_output("error", error)

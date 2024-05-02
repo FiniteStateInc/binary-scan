@@ -144,7 +144,7 @@ steps:
 
   - name: Finite State Binary Scan
     id: binary_scan
-    uses: FiniteStateInc/binary-scan@v2.0.0
+    uses: FiniteStateInc/binary-scan@v2.0.1
     with:
       finite-state-client-id: ${{ secrets.CLIENT_ID }}
       finite-state-secret: ${{ secrets.CLIENT_SECRET }}

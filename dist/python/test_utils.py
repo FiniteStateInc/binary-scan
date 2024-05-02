@@ -3,7 +3,6 @@ from unittest.mock import mock_open, patch
 
 from utils import (
     extract_asset_version,
-    generate_comment,
     set_multiline_output,
     set_output,
 )

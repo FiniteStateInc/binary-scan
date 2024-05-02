@@ -30,7 +30,7 @@ for them.
 >
 > To avoid issues, consider using a GitHub-hosted runner image like
 > 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with both
-> Node.js and Python.
+> Node.js and Python required versions.
 
 <!-- action-docs-description -->
 
@@ -114,7 +114,7 @@ reference the **Inputs** section.
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v2.0.0
+uses: FiniteStateInc/binary-scan@v2.0.1
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -204,7 +204,7 @@ jobs:
           path: # Put the path to your binary file generated in the previous step here
 
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v2.0.0
+        uses: FiniteStateInc/binary-scan@v2.0.1
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}

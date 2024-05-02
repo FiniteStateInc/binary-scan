@@ -1,7 +1,7 @@
 {
   "name": "binary-scan-github",
-  "description": "Binary Scan Github Actino",
-  "version": "2.0.0",
+  "description": "Binary Scan Github Action",
+  "version": "2.0.1",
   "author": "christianpfarher@finitestate.io",
   "private": false,
   "homepage": "https://github.com/FiniteStateInc/binary-scan",
