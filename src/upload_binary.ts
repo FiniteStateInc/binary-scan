@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as cp from 'child_process'
 import * as core from '@actions/core'
 
+
 export async function getInputs(): Promise<object> {
   return {
     INPUT_FINITE_STATE_CLIENT_ID: core.getInput('FINITE-STATE-CLIENT-ID'),
@@ -24,29 +25,14 @@ export async function getInputs(): Promise<object> {
   }
 }
 
-export async function runPython(): Promise<string[]> {
+export async function uploadBinary(): Promise<string[]> {
   const envVariables = await getInputs()
-
-  // Execute the predefined Python script
-  const pythonPath = `${__dirname}/python`
-  cp.execSync(`pip install -r ${path.join(pythonPath, 'requirements.txt')}`)
-  const scriptPath = path.join(pythonPath, 'upload_binary.py')
-
-  // Execute the predefined Python script
-  const pythonProcess = cp.spawn('python', [scriptPath], {
-    shell: true,
-    env: { ...process.env, ...envVariables }
-  })
+  
+  
   const response: string[] = []
-  pythonProcess.stdout.on(`data`, data => {
-    response.push(data.toString())
-    core.notice(data.toString())
-  })
-
-  pythonProcess.stderr.on(`data`, data => {
-    core.notice(data.toString())
-    response.push(data.toString())
-  })
+  //response.push(data.toString())
+  //core.notice(data.toString())
+  
 
   return response
 }
