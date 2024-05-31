@@ -1,7 +1,6 @@
-
-import fetch from 'node-fetch';
 import fs from 'fs';
 import { ALL_ASSETS } from './fs_queries';
+import axios, { AxiosResponse } from 'axios';
 
 enum UploadMethod {
     WEB_APP_UI = "WEB_APP_UI",
@@ -124,18 +123,36 @@ async function uploadFileForBinaryAnalysis(
     return launchResponse.data;
 }
 
-async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<Response> {
-    const response = await fetch(url, {
-        method: 'PUT',
-        body: bytes
-    });
 
-    if (response.status === 200) {
-        return response;
-    } else {
-        throw new Error(`Error: ${response.status} - ${await response.text()}`);
+
+async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<AxiosResponse> {
+    /**
+     * Used for uploading a file to a pre-signed S3 URL
+     *
+     * @param url - (Pre-signed S3) URL
+     * @param bytes - Bytes to upload
+     * @returns - Axios response object
+     * @throws - If the response status code is not 200
+     */
+
+    try {
+        const response = await axios.put(url, bytes);
+        if (response.status === 200) {
+            return response;
+        } else {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(`Error: ${error.response?.status} - ${error.response?.statusText}`);
+        } else {
+            throw error;
+        }
     }
 }
+
+export default uploadBytesToUrl;
+
 
 
 async function* fileChunks(file_path: string, chunk_size: number = 1024 * 1024 * 1024 * 5): AsyncGenerator<Uint8Array> {
@@ -146,32 +163,47 @@ async function* fileChunks(file_path: string, chunk_size: number = 1024 * 1024 *
 }
 
 async function sendGraphqlQuery(token: string, organizationContext: string, query: string, variables?: Record<string, any>): Promise<any> {
-    const headers = {
+     /**
+     * Send a GraphQL query to the API
+     *
+     * @param token - Auth token. This is the token returned by getAuthToken(). Just the token, do not include "Bearer" in this string, that is handled inside the method.
+     * @param organizationContext - Organization context. This is provided by the Finite State API management. It looks like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".
+     * @param query - The GraphQL query string
+     * @param variables - Variables to be used in the GraphQL query, by default null
+     * @returns - Response JSON
+     * @throws - If the response status code is not 200
+     */
+     const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
         'Organization-Context': organizationContext
     };
+
     const data = {
         query: query,
         variables: variables
     };
 
-    const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    });
+    try {
+        const response: AxiosResponse = await axios.post(API_URL, data, { headers });
 
-    if (response.status === 200) {
-        const jsonResponse = await response.json();
+        if (response.status === 200) {
+            const responseData = response.data;
 
-        if (jsonResponse.errors) {
-            throw new Error(`Error: ${JSON.stringify(jsonResponse.errors)}`);
+            if (responseData.errors) {
+                throw new Error(`Error: ${responseData.errors}`);
+            }
+
+            return responseData;
+        } else {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
         }
-
-        return jsonResponse;
-    } else {
-        throw new Error(`Error: ${response.status} - ${await response.text()}`);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(`Error: ${error.response?.status} - ${error.response?.statusText}`);
+        } else {
+            throw error;
+        }
     }
 }
 
@@ -664,14 +696,15 @@ async function createNewAssetVersionArtifactAndTestForUpload(
     return testId;
 }
 
-async function createNewAssetVersionAndUploadBinary(
+export async function createNewAssetVersionAndUploadBinary(
     token: string,
     organizationContext: string,
-    params: {createdByUserId?: string,
+    params: {
+    assetId: string,
+    version: string,
+    filePath: string,
+    createdByUserId?: string,
         businessUnitId?: string,
-    assetId?: string,
-    version?: string,
-    filePath?: string,
     productId?: string,
     artifactDescription?: string,
     quickScan?: boolean,

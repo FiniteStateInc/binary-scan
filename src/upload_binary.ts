@@ -1,6 +1,8 @@
 import * as path from 'path'
 import * as cp from 'child_process'
 import * as core from '@actions/core'
+import getAuthToken from './fs_token'
+import { createNewAssetVersionAndUploadBinary } from './fs_main'
 
 
 export async function getInputs(): Promise<object> {
@@ -28,6 +30,11 @@ export async function getInputs(): Promise<object> {
 export async function uploadBinary(): Promise<string[]> {
   const envVariables = await getInputs()
   
+  const version='test'
+  const token = await getAuthToken(clientId, clientSecret);
+  const res = await createNewAssetVersionAndUploadBinary(token, organizationContext, {assetId, version, filePath})
+
+  console.log(token)
   
   const response: string[] = []
   //response.push(data.toString())

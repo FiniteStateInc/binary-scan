@@ -1,74 +1,47 @@
-import fs from 'fs';
-import path from 'path';
-import finiteStateSdk from 'finite_state_sdk';
-import { promisify } from 'util';
+import axios from 'axios';
 
-const TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-const TOKEN_DIRECTORY = '.tokencache';
+const API_URL = 'https://platform.finitestate.io/api/v1/graphql'
+const AUDIENCE = "https://platform.finitestate.io/api/v1/graphql"
+const TOKEN_URL = "https://platform.finitestate.io/api/v1/auth/token"
 
-const mkdir = promisify(fs.mkdir);
-const exists = promisify(fs.exists);
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const unlink = promisify(fs.unlink);
-const stat = promisify(fs.stat);
+export async function getAuthToken(
+    clientId: string,
+    clientSecret: string,
+    tokenUrl: string = TOKEN_URL,
+    audience: string = AUDIENCE
+): Promise<string> {
+    /**
+     * Get an auth token for use with the API using CLIENT_ID and CLIENT_SECRET
+     *
+     * @param clientId - CLIENT_ID as specified in the API documentation
+     * @param clientSecret - CLIENT_SECRET as specified in the API documentation
+     * @param tokenUrl - Token URL, by default TOKEN_URL
+     * @param audience - Audience, by default AUDIENCE
+     * @returns - Auth token. Use this token as the Authorization header in subsequent API calls.
+     * @throws - If the response status code is not 200
+     */
 
-class TokenCache {
-    private token: string | null = null;
-    private tokenFile: string;
+    const payload = {
+        client_id: clientId,
+        client_secret: clientSecret,
+        audience: audience,
+        grant_type: 'client_credentials'
+    };
 
-    constructor(private organizationContext: string, private clientId?: string) {
-        const tokenPath = this.clientId
-            ? path.join(TOKEN_DIRECTORY, `${this.organizationContext}-${this.clientId}`)
-            : path.join(TOKEN_DIRECTORY, this.organizationContext);
+    const headers = {
+        'Content-Type': 'application/json'
+    };
 
-        this.tokenFile = path.join(tokenPath, 'token.txt');
-
-        this.initializeTokenCache(tokenPath);
-    }
-
-    private async initializeTokenCache(tokenPath: string): Promise<void> {
-        if (!(await exists(TOKEN_DIRECTORY))) {
-            await mkdir(TOKEN_DIRECTORY);
+    try {
+        const response = await axios.post(tokenUrl, payload, { headers });
+        if (response.status < 300 && response.status>= 200) {
+            return response.data.access_token;
+        } else {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
         }
-
-        if (!(await exists(tokenPath))) {
-            await mkdir(tokenPath);
-        }
-    }
-
-    private async getTokenFromApi(clientId: string, clientSecret: string): Promise<void> {
-        this.token = await finiteStateSdk.getAuthToken(clientId, clientSecret);
-        await writeFile(this.tokenFile, this.token, 'utf8');
-    }
-
-    public async getToken(clientId: string, clientSecret: string): Promise<string> {
-        if (this.token === null) {
-            if (await exists(this.tokenFile)) {
-                const stats = await stat(this.tokenFile);
-                if (stats.mtime.getTime() < Date.now() - TOKEN_EXPIRATION_TIME) {
-                    console.log('Token is more than 24 hours old, deleting it...');
-                    await this.invalidateToken();
-                    await this.getTokenFromApi(clientId, clientSecret);
-                } else {
-                    console.log('Getting saved token from disk...');
-                    this.token = await readFile(this.tokenFile, 'utf8');
-                }
-            } else {
-                console.log('Querying the API for a new token...');
-                await this.getTokenFromApi(clientId, clientSecret);
-            }
-        }
-
-        return this.token!;
-    }
-
-    public async invalidateToken(): Promise<void> {
-        this.token = null;
-        if (await exists(this.tokenFile)) {
-            await unlink(this.tokenFile);
-        }
+    } catch (error:any) {
+        throw new Error(`Error: ${error.response.status} - ${error.response.statusText}`);
     }
 }
 
-export default TokenCache;
+export default getAuthToken;
