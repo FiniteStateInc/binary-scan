@@ -51,7 +51,8 @@ async function uploadFileForBinaryAnalysis(
     // Upload file in chunks
     let i = 1;
     const partData = [];
-    for await (const chunk of fileChunks(filePath, chunkSize)) {
+    const resFileChunks = fileChunks(filePath, chunkSize)
+    for await (const chunk of resFileChunks) {
         const generateUploadPartUrlQuery = `
             mutation GenerateUploadPartUrl($partNumber: Int!, $uploadId: ID!, $uploadKey: String!) {
                 generateUploadPartUrlV2(partNumber: $partNumber, uploadId: $uploadId, uploadKey: $uploadKey) {
@@ -125,7 +126,7 @@ async function uploadFileForBinaryAnalysis(
 
 
 
-async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<AxiosResponse> {
+export async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<AxiosResponse> {
     /**
      * Used for uploading a file to a pre-signed S3 URL
      *
@@ -150,10 +151,23 @@ async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<AxiosRe
         }
     }
 }
+/*async function uploadBytesToUrl(url: string, chunk: Buffer): Promise<any> {
+    try {
+        const response = await axios.put(url, chunk, {
+            headers: {
+                'Content-Type': 'application/octet-stream'
+            }
+        });
 
-export default uploadBytesToUrl;
-
-
+        return response;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            throw new Error(`Upload to URL failed: ${error.response.statusText}`);
+        } else {
+            throw new Error(`Upload to URL failed: ${error.message}`);
+        }
+    }
+}*/
 
 async function* fileChunks(file_path: string, chunk_size: number = 1024 * 1024 * 1024 * 5): AsyncGenerator<Uint8Array> {
     const fileStream = fs.createReadStream(file_path, { highWaterMark: chunk_size });
