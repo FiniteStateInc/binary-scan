@@ -1,6 +1,6 @@
-import fs from 'fs';
 import { ALL_ASSETS } from './fs_queries';
 import axios, { AxiosResponse } from 'axios';
+import * as fs from 'fs';
 
 enum UploadMethod {
     WEB_APP_UI = "WEB_APP_UI",
@@ -16,139 +16,114 @@ const TOKEN_URL = "https://platform.finitestate.io/api/v1/auth/token"
 async function uploadFileForBinaryAnalysis(
     token: string,
     organizationContext: string,
-    params: {testId: string,
-    filePath: string,
+    params: {
+        testId: string | null,
+    filePath: string | null,
     chunkSize?: number,
-    quickScan?: boolean
-}
+    quickScan?: boolean}
 ): Promise<any> {
-    const {testId,filePath,chunkSize= 1024 * 1024 * 1024 * 5,
-        quickScan = false} = params;
+    const {chunkSize=1024 * 1024 * 64, quickScan = false, testId=null, filePath=null} = params
     if (!testId) {
-        throw new Error("Test ID is required");
+        throw new Error("Test Id is required");
     }
     if (!filePath) {
         throw new Error("File Path is required");
     }
 
-    // Start Multi-part Upload
-    const startMultipartUploadQuery = `
-        mutation Start($testId: ID!) {
-            startMultipartUploadV2(testId: $testId) {
-                uploadId
+    const startQuery = `
+    mutation Start($testId: ID!) {
+        startMultipartUploadV2(testId: $testId) {
+            uploadId
+            key
+        }
+    }
+    `;
+
+    let response = await sendGraphqlQuery(token, organizationContext, startQuery, { testId });
+
+    const uploadId = response.data.startMultipartUploadV2.uploadId;
+    const uploadKey = response.data.startMultipartUploadV2.key;
+
+    let i = 1;
+    const partData: { ETag: string; PartNumber: number }[] = [];
+    for await (const chunk of fileChunks(filePath, chunkSize)) {
+        const partQuery = `
+        mutation GenerateUploadPartUrl($partNumber: Int!, $uploadId: ID!, $uploadKey: String!) {
+            generateUploadPartUrlV2(partNumber: $partNumber, uploadId: $uploadId, uploadKey: $uploadKey) {
                 key
+                uploadUrl
             }
         }
-    `;
-    const startVariables = {
-        testId: testId
-    };
-    const startResponse = await sendGraphqlQuery(token, organizationContext, startMultipartUploadQuery, startVariables);
-
-    const uploadId = startResponse.data.startMultipartUploadV2.uploadId;
-    const uploadKey = startResponse.data.startMultipartUploadV2.key;
-
-    // Upload file in chunks
-    let i = 1;
-    const partData = [];
-    const resFileChunks = fileChunks(filePath, chunkSize)
-    for await (const chunk of resFileChunks) {
-        const generateUploadPartUrlQuery = `
-            mutation GenerateUploadPartUrl($partNumber: Int!, $uploadId: ID!, $uploadKey: String!) {
-                generateUploadPartUrlV2(partNumber: $partNumber, uploadId: $uploadId, uploadKey: $uploadKey) {
-                    key
-                    uploadUrl
-                }
-            }
         `;
-        const generateUploadPartUrlVariables = {
-            partNumber: i,
-            uploadId: uploadId,
-            uploadKey: uploadKey
-        };
-        const generateUrlResponse = await sendGraphqlQuery(token, organizationContext, generateUploadPartUrlQuery, generateUploadPartUrlVariables);
-        const chunkUploadUrl = generateUrlResponse.data.generateUploadPartUrlV2.uploadUrl;
 
-        // Upload the chunk
-        const uploadResponse = await uploadBytesToUrl(chunkUploadUrl, chunk);
+        response = await sendGraphqlQuery(token, organizationContext, partQuery, {
+            partNumber: i,
+            uploadId,
+            uploadKey
+        });
         
+        const chunkUploadUrl = response.data.generateUploadPartUrlV2.uploadUrl;
+
+        response = await uploadBytesToUrl(chunkUploadUrl, chunk);
+
         partData.push({
-            ETag: (uploadResponse.headers as any)['ETag'],
+            ETag: response.headers.etag,
             PartNumber: i
         });
+
         i++;
     }
 
-    // Complete Multipart Upload
-    const completeMultipartUploadQuery = `
-        mutation CompleteMultipartUpload($partData: [PartInput!]!, $uploadId: ID!, $uploadKey: String!) {
-            completeMultipartUploadV2(partData: $partData, uploadId: $uploadId, uploadKey: $uploadKey) {
+    const completeQuery = `
+    mutation CompleteMultipartUpload($partData: [PartInput!]!, $uploadId: ID!, $uploadKey: String!) {
+        completeMultipartUploadV2(partData: $partData, uploadId: $uploadId, uploadKey: $uploadKey) {
+            key
+        }
+    }
+    `;
+
+    response = await sendGraphqlQuery(token, organizationContext, completeQuery, {
+        partData,
+        uploadId,
+        uploadKey
+    });
+
+    const key = response.data.completeMultipartUploadV2.key;
+
+    let launchQuery = `
+    mutation LaunchBinaryUploadProcessing($key: String!, $testId: ID!) {
+        launchBinaryUploadProcessing(key: $key, testId: $testId) {
+            key
+        }
+    }
+    `;
+
+    const variables: any = { key, testId };
+    if (quickScan) {
+        launchQuery = `
+        mutation LaunchBinaryUploadProcessing($key: String!, $testId: ID!, $configurationOptions: [BinaryAnalysisConfigurationOption]) {
+            launchBinaryUploadProcessing(key: $key, testId: $testId, configurationOptions: $configurationOptions) {
                 key
             }
         }
-    `;
-    const completeVariables = {
-        partData: partData,
-        uploadId: uploadId,
-        uploadKey: uploadKey
-    };
-    const completeResponse = await sendGraphqlQuery(token, organizationContext, completeMultipartUploadQuery, completeVariables);
-    const key = completeResponse.data.completeMultipartUploadV2.key;
-
-    // Launch Binary Upload Processing
-    let launchQuery;
-    const launchVariables: {key: string, testId: string, configurationOptions?: string[]} = {
-        key: key,
-        testId: testId,
-    };
-    if (quickScan) {
-        launchQuery = `
-            mutation LaunchBinaryUploadProcessing($key: String!, $testId: ID!, $configurationOptions: [BinaryAnalysisConfigurationOption]) {
-                launchBinaryUploadProcessing(key: $key, testId: $testId, configurationOptions: $configurationOptions) {
-                    key
-                }
-            }
         `;
-        launchVariables['configurationOptions'] = ["QUICK_SCAN"];
-    } else {
-        launchQuery = `
-            mutation LaunchBinaryUploadProcessing($key: String!, $testId: ID!) {
-                launchBinaryUploadProcessing(key: $key, testId: $testId) {
-                    key
-                }
-            }
-        `;
+        variables.configurationOptions = ["QUICK_SCAN"];
     }
-    const launchResponse = await sendGraphqlQuery(token, organizationContext, launchQuery, launchVariables);
 
-    return launchResponse.data;
+    response = await sendGraphqlQuery(token, organizationContext, launchQuery, variables);
+
+    return response.data;
 }
 
 
 
-export async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<AxiosResponse> {
-    /**
-     * Used for uploading a file to a pre-signed S3 URL
-     *
-     * @param url - (Pre-signed S3) URL
-     * @param bytes - Bytes to upload
-     * @returns - Axios response object
-     * @throws - If the response status code is not 200
-     */
+async function uploadBytesToUrl(url: string, bytes: Buffer): Promise<AxiosResponse> {
+    const response = await axios.put(url, bytes);
 
-    try {
-        const response = await axios.put(url, bytes);
-        if (response.status === 200) {
-            return response;
-        } else {
-            throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(`Error: ${error.response?.status} - ${error.response?.statusText}`);
-        } else {
-            throw error;
-        }
+    if (response.status === 200) {
+        return response;
+    } else {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
 }
 /*async function uploadBytesToUrl(url: string, chunk: Buffer): Promise<any> {
@@ -169,10 +144,16 @@ export async function uploadBytesToUrl(url: string, bytes: Uint8Array): Promise<
     }
 }*/
 
-async function* fileChunks(file_path: string, chunk_size: number = 1024 * 1024 * 1024 * 5): AsyncGenerator<Uint8Array> {
-    const fileStream = fs.createReadStream(file_path, { highWaterMark: chunk_size });
-    for await (const chunk of fileStream) {
-        yield chunk;
+async function* fileChunks(filePath: string, chunkSize: number = 1024 * 1024 * 64): AsyncGenerator<Buffer> {
+    const fileStream = fs.createReadStream(filePath, { highWaterMark: chunkSize });
+
+    try {
+        for await (const chunk of fileStream) {
+            yield chunk;
+        }
+    } catch (error: any) {
+        // Handle or propagate the error
+        throw new Error(`Error reading file: ${error.message}`);
     }
 }
 
