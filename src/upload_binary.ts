@@ -29,12 +29,12 @@ export async function getInputs(): Promise<object> {
 
 export async function uploadBinary(): Promise<string[]> {
   const envVariables = await getInputs()
-  const clientId='aQ9AlThjyE6oRizgo8qhEbLCFSy5OywZ';
-  const clientSecret='JV6x0QfMVi4r1GOXOBAyMlp7--PU3Bn5Q3PdGixrWGKx9Mr3BroQoIl7B_PiQa_I';
-  const organizationContext = '03b5e17b-aeda-42d4-9f2c-aeb144d96a93';
-  const assetId="2720805263";
-  const filePath='/home/christian/argeniss/finitestate/integrations/github/binary-scan/src/TL-WR841HPv1.bin'
-  const version='test - from ts sdk!!'
+  const clientId='';
+  const clientSecret='';
+  const organizationContext = '';
+  const assetId="";
+  const filePath='/';
+  const version='';
   const token = await getAuthToken(clientId, clientSecret);
   const res = await createNewAssetVersionAndUploadBinary(token, organizationContext, {assetId, version, filePath})
   console.log(res)
