@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { runPython } from './python'
+import { uploadBinary } from './upload_binary'
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -7,16 +7,16 @@ import { runPython } from './python'
 export async function run(): Promise<void> {
   try {
     core.debug(
-      `Starting execute python upload binary ${new Date().toTimeString()}`
+      `Starting execute upload binary ${new Date().toTimeString()}`
     )
-    await runPython()
+    await uploadBinary()
 
     core.debug(
-      `Finish execute python upload binary ${new Date().toTimeString()}`
+      `Finish execute upload binary ${new Date().toTimeString()}`
     )
   } catch (error) {
     // Fail the workflow run if an error occurs
-    core.debug(`Error executing python upload binary ${JSON.stringify(error)}`)
+    core.debug(`Error executing upload binary ${JSON.stringify(error)}`)
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
