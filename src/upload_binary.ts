@@ -1,8 +1,12 @@
-import * as path from 'path'
-import * as cp from 'child_process'
 import * as core from '@actions/core'
 import getAuthToken from './fs_token'
-import { createNewAssetVersionAndUploadBinary } from './fs_main'
+import { UploadMethod, createNewAssetVersionAndUploadBinary } from './fs_main'
+import {
+  generateAssetVersionUrl,
+  generateComment,
+  isPullRequest
+} from './utils'
+import { createNewAssetVersionAndUploadBinaryResponseType } from './types'
 
 export async function getInputs(): Promise<any> {
   return {
@@ -26,15 +30,17 @@ export async function getInputs(): Promise<any> {
   }
 }
 
-export async function uploadBinary(): Promise<string[]> {
-  const envVariables = await getInputs();
+export async function uploadBinary(): Promise<
+  createNewAssetVersionAndUploadBinaryResponseType | undefined
+> {
+  const envVariables = await getInputs()
 
-  const clientId = envVariables.inputFiniteStateClientId;
-  const clientSecret = envVariables.inputFiniteStateSecret;
-  const organizationContext = envVariables.inputFiniteStateOrganizationContext;
+  const clientId = envVariables.inputFiniteStateClientId
+  const clientSecret = envVariables.inputFiniteStateSecret
+  const organizationContext = envVariables.inputFiniteStateOrganizationContext
 
-  const automaticComment = envVariables.inputAutomaticComment;
-  const githubToken = envVariables.inputGithubToken;
+  const automaticComment = envVariables.inputAutomaticComment
+  const githubToken = envVariables.inputGithubToken
 
   const params = {
     assetId: envVariables.inputAssetId,
@@ -44,15 +50,50 @@ export async function uploadBinary(): Promise<string[]> {
     businessUnitId: envVariables.inputBusinessUnitId,
     productId: envVariables.inputProductId,
     artifactDescription: envVariables.inputArtifactDescription,
-    quickScan: envVariables.inputQuickScan
+    quickScan: envVariables.inputQuickScan,
+    uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
+  core.info('Starting - Authentication')
+  let token: any
+  try {
+    token = await getAuthToken(clientId, clientSecret)
+  } catch (error) {
+    core.setFailed(
+      `Caught an exception trying to get and auth token on Finite State: ${error}`
+    )
+    //todo: should return here?
+  }
+  if (token) {
+    try {
+      const response = await createNewAssetVersionAndUploadBinary(
+        token,
+        organizationContext,
+        params
+      )
+      core.info('File uploaded')
+      core.setOutput('response', response)
+      const assetVersionUrl = await generateAssetVersionUrl(params)
+      core.setOutput('asset-version-url', response)
+      core.info(`Asset version URL: ${assetVersionUrl}`)
 
-  const token = await getAuthToken(clientId, clientSecret)
-  const response = await createNewAssetVersionAndUploadBinary(
-    token,
-    organizationContext,
-    params
-  )
-  
-  return response
+      if (!automaticComment) {
+        core.info('Automatic comment disabled')
+      } else {
+        if (await isPullRequest()) {
+          core.info('Automatic comment enabled. Generating comment...')
+          generateComment(githubToken, assetVersionUrl)
+        } else {
+          core.info(
+            "Automatic comment enabled. But this isn't a pull request. Skip generating comment..."
+          )
+        }
+      }
+      return response
+    } catch (error) {
+      core.setOutput('error', error)
+      core.setFailed(
+        `Caught a ValueError trying to create new asset version and upload binary: ${error}`
+      )
+    }
+  }
 }

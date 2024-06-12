@@ -1,11 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-
-type createNewAssetVersionAndUploadBinaryResponseType = {
-  launchBinaryUploadProcessing: {
-    key: string
-  }
-}
+import { createNewAssetVersionAndUploadBinaryResponseType } from './types'
 
 export async function parseResponse(
   response: createNewAssetVersionAndUploadBinaryResponseType
