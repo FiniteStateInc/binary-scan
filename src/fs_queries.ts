@@ -1,76 +1,79 @@
 export interface AssetFilter {
-    id?: string;
-    group?: { id: string };
+  id?: string
+  group?: { id: string }
 }
 
 export interface GetAllAssetsVariables {
-    filter: AssetFilter;
-    after: string | null;
-    first: number;
+  filter: AssetFilter
+  after: string | null
+  first: number
 }
 
 export interface GetAllAssetsQueryResult {
-    _cursor: string;
-    id: string;
-    name: string;
-    createdAt: string;
-    createdBy: {
-        id: string;
-        email: string;
-        __typename: string;
-    };
-    group: {
-        id: string;
-        name: string;
-    };
-    ctx: {
-        asset: string;
-        businessUnits: string[];
-        products: string[];
-    };
-    defaultVersion: {
-        id: string;
-        name: string;
-        relativeRiskScore: number;
-    };
-    versions: {
-        id: string;
-        name: string;
-        relativeRiskScore: number;
-        testStatuses: string[];
-        __typename: string;
-    }[];
-    __typename: string;
+  _cursor: string
+  id: string
+  name: string
+  createdAt: string
+  createdBy: {
+    id: string
+    email: string
+    __typename: string
+  }
+  group: {
+    id: string
+    name: string
+  }
+  ctx: {
+    asset: string
+    businessUnits: string[]
+    products: string[]
+  }
+  defaultVersion: {
+    id: string
+    name: string
+    relativeRiskScore: number
+  }
+  versions: {
+    id: string
+    name: string
+    relativeRiskScore: number
+    testStatuses: string[]
+    __typename: string
+  }[]
+  __typename: string
 }
 
 interface Variables {
-    filter: Record<string, any>;
-    after: string | null;
-    first: number;
+  filter: Record<string, any>
+  after: string | null
+  first: number
 }
 
-function assetVariables(assetId: string | null = null, businessUnitId: string | null = null): Variables {
-    let variables: Variables = {
-        filter: {},
-        after: null,
-        first: 100
-    };
+function assetVariables(
+  assetId: string | null = null,
+  businessUnitId: string | null = null
+): Variables {
+  let variables: Variables = {
+    filter: {},
+    after: null,
+    first: 100
+  }
 
-    if (assetId !== null) {
-        variables.filter["id"] = assetId;
+  if (assetId !== null) {
+    variables.filter['id'] = assetId
+  }
+
+  if (businessUnitId !== null) {
+    variables.filter['group'] = {
+      id: businessUnitId
     }
+  }
 
-    if (businessUnitId !== null) {
-        variables.filter["group"] = {
-            id: businessUnitId
-        };
-    }
-
-    return variables;
+  return variables
 }
 
 export const ALL_ASSETS = {
-    query: `
+  query: `
         query GetAllAssets(
             $filter: AssetFilter!,
             $after: String,
@@ -115,8 +118,8 @@ export const ALL_ASSETS = {
                 }
             }
     `,
-    variables: assetVariables
-};
+  variables: assetVariables
+}
 
 /*export function getAllAssetsVariables(assetId?: string, businessUnitId?: string): GetAllAssetsVariables {
     const variables: GetAllAssetsVariables = {

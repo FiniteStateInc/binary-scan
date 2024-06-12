@@ -6,14 +6,10 @@ import { uploadBinary } from './upload_binary'
  */
 export async function run(): Promise<void> {
   try {
-    core.debug(
-      `Starting execute upload binary ${new Date().toTimeString()}`
-    )
+    core.debug(`Starting execute upload binary ${new Date().toTimeString()}`)
     await uploadBinary()
 
-    core.debug(
-      `Finish execute upload binary ${new Date().toTimeString()}`
-    )
+    core.debug(`Finish execute upload binary ${new Date().toTimeString()}`)
   } catch (error) {
     // Fail the workflow run if an error occurs
     core.debug(`Error executing upload binary ${JSON.stringify(error)}`)
