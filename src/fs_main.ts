@@ -699,7 +699,7 @@ export async function createNewAssetVersionAndUploadBinary(
     version: string,
     filePath: string,
     createdByUserId?: string,
-        businessUnitId?: string,
+    businessUnitId?: string,
     productId?: string,
     artifactDescription?: string,
     quickScan?: boolean,

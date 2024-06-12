@@ -4,43 +4,55 @@ import * as core from '@actions/core'
 import getAuthToken from './fs_token'
 import { createNewAssetVersionAndUploadBinary } from './fs_main'
 
-
-export async function getInputs(): Promise<object> {
+export async function getInputs(): Promise<any> {
   return {
-    INPUT_FINITE_STATE_CLIENT_ID: core.getInput('FINITE-STATE-CLIENT-ID'),
-    INPUT_FINITE_STATE_SECRET: core.getInput('FINITE-STATE-SECRET'),
-    INPUT_FINITE_STATE_ORGANIZATION_CONTEXT: core.getInput(
+    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID'),
+    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET'),
+    inputFiniteStateOrganizationContext: core.getInput(
       'FINITE-STATE-ORGANIZATION-CONTEXT'
     ),
-    INPUT_ASSET_ID: core.getInput('ASSET-ID'),
-    INPUT_VERSION: core.getInput('VERSION'),
-    INPUT_FILE_PATH: core.getInput('FILE-PATH'),
-    INPUT_QUICK_SCAN: core.getInput('QUICK-SCAN'),
+    inputAssetId: core.getInput('ASSET-ID'),
+    inputVersion: core.getInput('VERSION'),
+    inputFilePath: core.getInput('FILE-PATH'),
+    inputQuickScan: core.getInput('QUICK-SCAN'),
 
     // non required parameters:
-    INPUT_BUSINESS_UNIT_ID: core.getInput('BUSINESS-UNIT-ID'),
-    INPUT_CREATED_BY_USER_ID: core.getInput('CREATED-BY-USER-ID'),
-    INPUT_PRODUCT_ID: core.getInput('PRODUCT-ID'),
-    INPUT_ARTIFACT_DESCRIPTION: core.getInput('ARTIFACT-DESCRIPTION'),
-    INPUT_AUTOMATIC_COMMENT: core.getInput('AUTOMATIC-COMMENT'),
-    INPUT_GITHUB_TOKEN: core.getInput('GITHUB-TOKEN')
+    inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
+    inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
+    inputProductId: core.getInput('PRODUCT-ID'),
+    inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
+    inputAutomaticComment: core.getInput('AUTOMATIC-COMMENT'),
+    inputGithubToken: core.getInput('GITHUB-TOKEN')
   }
 }
 
 export async function uploadBinary(): Promise<string[]> {
-  const envVariables = await getInputs()
-  const clientId='';
-  const clientSecret='';
-  const organizationContext='';
-  const assetId='';
-  const filePath='';
-  const version='';
-  const token = await getAuthToken(clientId, clientSecret);
-  const res = await createNewAssetVersionAndUploadBinary(token, organizationContext, {assetId, version, filePath})
-  console.log(res)
-  const response: string[] = []
-  //response.push(data.toString())
-  //core.notice(data.toString())
+  const envVariables = await getInputs();
 
+  const clientId = envVariables.inputFiniteStateClientId;
+  const clientSecret = envVariables.inputFiniteStateSecret;
+  const organizationContext = envVariables.inputFiniteStateOrganizationContext;
+
+  const automaticComment = envVariables.inputAutomaticComment;
+  const githubToken = envVariables.inputGithubToken;
+
+  const params = {
+    assetId: envVariables.inputAssetId,
+    version: envVariables.inputVersion,
+    filePath: envVariables.inputFilePath,
+    createdByUserId: envVariables.inputCreatedByUserId,
+    businessUnitId: envVariables.inputBusinessUnitId,
+    productId: envVariables.inputProductId,
+    artifactDescription: envVariables.inputArtifactDescription,
+    quickScan: envVariables.inputQuickScan
+  }
+
+  const token = await getAuthToken(clientId, clientSecret)
+  const response = await createNewAssetVersionAndUploadBinary(
+    token,
+    organizationContext,
+    params
+  )
+  
   return response
 }
