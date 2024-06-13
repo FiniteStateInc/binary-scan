@@ -12,10 +12,10 @@ export enum UploadMethod {
 const API_URL = 'https://platform.finitestate.io/api/v1/graphql'
 interface LaunchBinaryUploadProcessingResponse {
   data: {
-      launchBinaryUploadProcessing: {
-          key: string;
-      };
-  };
+    launchBinaryUploadProcessing: {
+      key: string
+    }
+  }
 }
 async function uploadFileForBinaryAnalysis(
   token: string,
@@ -204,12 +204,14 @@ async function sendGraphqlQuery(
   }
 
   const data = {
-    query: query,
-    variables: variables
+    query,
+    variables
   }
 
   try {
-    const response: axios.AxiosResponse = await axios.post(API_URL, data, { headers })
+    const response: axios.AxiosResponse = await axios.post(API_URL, data, {
+      headers
+    })
 
     if (response.status === 200) {
       const responseData = response.data
@@ -270,35 +272,35 @@ async function createTestAsThirdPartyScanner(
 }
 interface CreateTestResponse {
   createTest: {
-      id: string;
-      name: string;
-      artifactUnderTest: {
-          id: string;
-          name: string;
-          assetVersion: {
-              id: string;
-              name: string;
-              asset: {
-                  id: string;
-                  name: string;
-                  dependentProducts: Array<{
-                      id: string;
-                      name: string;
-                  }>;
-              };
-          };
-      };
-      createdBy: {
-          id: string;
-          email: string;
-      };
-      ctx: {
-          asset: string;
-          products: string[];
-          businessUnits: string[];
-      };
-      uploadMethod: string;
-  };
+    id: string
+    name: string
+    artifactUnderTest: {
+      id: string
+      name: string
+      assetVersion: {
+        id: string
+        name: string
+        asset: {
+          id: string
+          name: string
+          dependentProducts: {
+            id: string
+            name: string
+          }[]
+        }
+      }
+    }
+    createdBy: {
+      id: string
+      email: string
+    }
+    ctx: {
+      asset: string
+      products: string[]
+      businessUnits: string[]
+    }
+    uploadMethod: string
+  }
 }
 
 async function createTest(
@@ -405,8 +407,8 @@ async function createTest(
         asset: assetId,
         businessUnits: [businessUnitId]
       },
-      tools: tools,
-      uploadMethod: uploadMethod
+      tools,
+      uploadMethod
     }
   }
 
@@ -581,8 +583,8 @@ async function createAssetVersionOnAsset(
     assetId: string
     createdByUserId?: string
   } = {
-    assetVersionName: assetVersionName,
-    assetId: assetId
+    assetVersionName,
+    assetId
   }
 
   if (createdByUserId) {

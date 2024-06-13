@@ -23,7 +23,7 @@ export async function getAuthToken(
   const payload = {
     client_id: clientId,
     client_secret: clientSecret,
-    audience: audience,
+    audience,
     grant_type: 'client_credentials'
   }
 

@@ -53,7 +53,7 @@ function assetVariables(
   assetId: string | null = null,
   businessUnitId: string | null = null
 ): Variables {
-  let variables: Variables = {
+  const variables: Variables = {
     filter: {},
     after: null,
     first: 100

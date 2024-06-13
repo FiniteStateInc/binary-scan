@@ -2,7 +2,6 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import { createNewAssetVersionAndUploadBinaryResponseType } from './types'
 
-
 export async function extractAssetVersion(
   inputString: createNewAssetVersionAndUploadBinaryResponseType
 ): Promise<string | null> {

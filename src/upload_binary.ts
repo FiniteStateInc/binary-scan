@@ -1,24 +1,36 @@
 import * as core from '@actions/core'
 import getAuthToken from './fs_token'
-import { UploadMethod, createNewAssetVersionAndUploadBinary, createNewAssetVersionAndUploadBinaryParams } from './fs_main'
+import {
+  UploadMethod,
+  createNewAssetVersionAndUploadBinary,
+  createNewAssetVersionAndUploadBinaryParams
+} from './fs_main'
 import {
   extractAssetVersion,
   generateAssetVersionUrl,
   generateComment,
   isPullRequest
 } from './utils'
-import { createNewAssetVersionAndUploadBinaryResponseType, githubInputParamsType } from './types'
+import {
+  createNewAssetVersionAndUploadBinaryResponseType,
+  githubInputParamsType
+} from './types'
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
-    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {required: true}),
-    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {required: true}),
+    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
+      required: true
+    }),
+    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
+      required: true
+    }),
     inputFiniteStateOrganizationContext: core.getInput(
-      'FINITE-STATE-ORGANIZATION-CONTEXT', {required: true}
+      'FINITE-STATE-ORGANIZATION-CONTEXT',
+      { required: true }
     ),
-    inputAssetId: core.getInput('ASSET-ID', {required: true}),
-    inputVersion: core.getInput('VERSION', {required: true}),
-    inputFilePath: core.getInput('FILE-PATH', {required: true}),
+    inputAssetId: core.getInput('ASSET-ID', { required: true }),
+    inputVersion: core.getInput('VERSION', { required: true }),
+    inputFilePath: core.getInput('FILE-PATH', { required: true }),
     inputQuickScan: core.getInput('QUICK-SCAN'),
 
     // non required parameters:
@@ -35,9 +47,9 @@ export async function uploadBinary(): Promise<
   createNewAssetVersionAndUploadBinaryResponseType | undefined
 > {
   const envVariables = await getInputs()
-  core.setSecret('FINITE-STATE-CLIENT-ID');
-  core.setSecret('FINITE-STATE-SECRET');
-  core.setSecret('FINITE-STATE-ORGANIZATION-CONTEXT');
+  core.setSecret('FINITE-STATE-CLIENT-ID')
+  core.setSecret('FINITE-STATE-SECRET')
+  core.setSecret('FINITE-STATE-ORGANIZATION-CONTEXT')
 
   const clientId = envVariables.inputFiniteStateClientId
   const clientSecret = envVariables.inputFiniteStateSecret
@@ -74,12 +86,10 @@ export async function uploadBinary(): Promise<
       )
       core.info('File uploaded')
       core.setOutput('response', response)
-      
+
       const assetVersionResponse = await extractAssetVersion(response)
       if (!assetVersionResponse) {
-        core.setFailed(
-          `Response from Finite state API invalid: ${response}`
-        )
+        core.setFailed(`Response from Finite state API invalid: ${response}`)
       }
 
       const assetVersionUrl = await generateAssetVersionUrl(params)
