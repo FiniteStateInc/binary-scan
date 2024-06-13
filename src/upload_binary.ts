@@ -18,7 +18,7 @@ import {
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
-    inputFiniteStateClientId: core.getInput('finiteStateClientId', {
+    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
       required: true
     }),
     inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
