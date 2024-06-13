@@ -2,22 +2,16 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import { createNewAssetVersionAndUploadBinaryResponseType } from './types'
 
-export async function parseResponse(
-  response: createNewAssetVersionAndUploadBinaryResponseType
-) {
-  const assetVersion = await extractAssetVersion(
-    response.launchBinaryUploadProcessing.key
-  )
-}
 
-async function extractAssetVersion(
-  inputString: string
+export async function extractAssetVersion(
+  inputString: createNewAssetVersionAndUploadBinaryResponseType
 ): Promise<string | null> {
+  const str = inputString.launchBinaryUploadProcessing.key
   // Define a regular expression pattern to match the asset_version value
   const pattern = /asset_version=(\d+)/
 
   // Use pattern to find the first match in the input string
-  const match = inputString.match(pattern)
+  const match = str.match(pattern)
 
   // Check if a match was found and extract the value
   if (match) {
@@ -28,7 +22,7 @@ async function extractAssetVersion(
   }
 }
 
-export async function isPullRequest() {
+export async function isPullRequest(): Promise<true | null> {
   const context = github.context
 
   if (context.eventName !== 'pull_request') {
@@ -37,7 +31,7 @@ export async function isPullRequest() {
   }
   return true
 }
-async function getPRNumber() {
+async function getPRNumber(): Promise<number | null> {
   if (!(await isPullRequest())) {
     core.info('This context does not belongs to a pull request.')
     return null
@@ -55,7 +49,7 @@ async function getPRNumber() {
 export async function generateComment(
   githubToken: string,
   assetVersionUrl: string
-) {
+): Promise<void> {
   const PRNumber = await getPRNumber()
   const context = github.context
   if (PRNumber) {
@@ -81,6 +75,6 @@ export async function generateComment(
 export async function generateAssetVersionUrl(params: {
   assetId: string
   version: string
-}) {
+}): Promise<string> {
   return `https://platform.finitestate.io/artifacts/${params.assetId}/versions/${params.version}`
 }

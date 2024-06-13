@@ -788,20 +788,21 @@ async function createNewAssetVersionArtifactAndTestForUpload(
   return testId
 }
 
+export type createNewAssetVersionAndUploadBinaryParams = {
+  assetId: string
+  version: string
+  filePath: string
+  createdByUserId?: string
+  businessUnitId?: string
+  productId?: string
+  artifactDescription?: string
+  quickScan?: boolean
+  uploadMethod?: UploadMethod
+}
 export async function createNewAssetVersionAndUploadBinary(
   token: string,
   organizationContext: string,
-  params: {
-    assetId: string
-    version: string
-    filePath: string
-    createdByUserId?: string
-    businessUnitId?: string
-    productId?: string
-    artifactDescription?: string
-    quickScan?: boolean
-    uploadMethod?: UploadMethod
-  }
+  params: createNewAssetVersionAndUploadBinaryParams
 ): Promise<any> {
   const {
     createdByUserId,
