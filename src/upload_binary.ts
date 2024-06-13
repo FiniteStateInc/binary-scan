@@ -87,12 +87,12 @@ export async function uploadBinary(): Promise<
       core.info('File uploaded')
       core.setOutput('response', response)
 
-      const assetVersionResponse = await extractAssetVersion(response)
-      if (!assetVersionResponse) {
+      const assetVersion = await extractAssetVersion(response)
+      if (!assetVersion) {
         core.setFailed(`Response from Finite state API invalid: ${response}`)
       }
 
-      const assetVersionUrl = await generateAssetVersionUrl(params)
+      const assetVersionUrl = await generateAssetVersionUrl({assetId: params.assetId, version: assetVersion as string})
       core.setOutput('asset-version-url', response)
       core.info(`Asset version URL: ${assetVersionUrl}`)
 

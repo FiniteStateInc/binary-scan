@@ -64,7 +64,7 @@ export async function generateComment(
     await octokit.rest.issues.createComment({
       ...context.repo,
       issue_number: PRNumber,
-      body: commentBody.join()
+      body: commentBody.join("")
     })
 
     core.info(`Commented on PR #${PRNumber}`)
