@@ -101,5 +101,4 @@ __tests__/runner/*
 .idea
 .vscode
 *.code-workspace
-dist
 src/TL-WR841HPv1.bin
