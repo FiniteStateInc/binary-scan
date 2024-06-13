@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-const API_URL = 'https://platform.finitestate.io/api/v1/graphql'
 const AUDIENCE = 'https://platform.finitestate.io/api/v1/graphql'
 const TOKEN_URL = 'https://platform.finitestate.io/api/v1/auth/token'
 

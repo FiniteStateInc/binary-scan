@@ -1,5 +1,5 @@
 import { ALL_ASSETS } from './fs_queries'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import * as fs from 'fs'
 
 export enum UploadMethod {
@@ -10,8 +10,6 @@ export enum UploadMethod {
 }
 
 const API_URL = 'https://platform.finitestate.io/api/v1/graphql'
-const AUDIENCE = 'https://platform.finitestate.io/api/v1/graphql'
-const TOKEN_URL = 'https://platform.finitestate.io/api/v1/auth/token'
 
 async function uploadFileForBinaryAnalysis(
   token: string,
@@ -22,7 +20,7 @@ async function uploadFileForBinaryAnalysis(
     chunkSize?: number
     quickScan?: boolean
   }
-): Promise<any> {
+) {
   const {
     chunkSize = 1024 * 1024 * 64,
     quickScan = false,
@@ -134,7 +132,7 @@ async function uploadFileForBinaryAnalysis(
 async function uploadBytesToUrl(
   url: string,
   bytes: Buffer
-): Promise<AxiosResponse> {
+): Promise<axios.AxiosResponse> {
   const response = await axios.put(url, bytes)
 
   if (response.status === 200) {
@@ -205,7 +203,7 @@ async function sendGraphqlQuery(
   }
 
   try {
-    const response: AxiosResponse = await axios.post(API_URL, data, { headers })
+    const response: axios.AxiosResponse = await axios.post(API_URL, data, { headers })
 
     if (response.status === 200) {
       const responseData = response.data
