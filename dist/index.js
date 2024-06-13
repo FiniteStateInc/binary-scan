@@ -33275,7 +33275,7 @@ const fs_main_1 = __nccwpck_require__(7288);
 const utils_1 = __nccwpck_require__(1314);
 async function getInputs() {
     return {
-        inputFiniteStateClientId: core.getInput('finite-state-client-id', {
+        inputFiniteStateClientId: core.getInput('finiteStateClientId', {
             required: true
         }),
         inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
