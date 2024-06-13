@@ -844,7 +844,7 @@ export async function createNewAssetVersionAndUploadBinary(
   token: string,
   organizationContext: string,
   params: createNewAssetVersionAndUploadBinaryParams
-): Promise<LaunchBinaryUploadProcessingResponse> {
+): Promise<any> {
   const {
     createdByUserId,
     businessUnitId,

@@ -69,7 +69,7 @@ export async function uploadBinary(): Promise<
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
   core.info('Starting - Authentication')
-  let token: string
+  let token: string | undefined
   try {
     token = await getAuthToken(clientId, clientSecret)
   } catch (error) {
