@@ -10,7 +10,13 @@ export enum UploadMethod {
 }
 
 const API_URL = 'https://platform.finitestate.io/api/v1/graphql'
-
+interface LaunchBinaryUploadProcessingResponse {
+  data: {
+      launchBinaryUploadProcessing: {
+          key: string;
+      };
+  };
+}
 async function uploadFileForBinaryAnalysis(
   token: string,
   organizationContext: string,
@@ -20,7 +26,7 @@ async function uploadFileForBinaryAnalysis(
     chunkSize?: number
     quickScan?: boolean
   }
-) {
+): Promise<LaunchBinaryUploadProcessingResponse> {
   const {
     chunkSize = 1024 * 1024 * 64,
     quickScan = false,
@@ -240,7 +246,7 @@ async function createTestAsThirdPartyScanner(
     uploadMethod: UploadMethod
     productId?: string
   }
-): Promise<any> {
+): Promise<CreateTestResponse> {
   const {
     businessUnitId,
     createdByUserId,
@@ -262,6 +268,38 @@ async function createTestAsThirdPartyScanner(
     productId
   })
 }
+interface CreateTestResponse {
+  createTest: {
+      id: string;
+      name: string;
+      artifactUnderTest: {
+          id: string;
+          name: string;
+          assetVersion: {
+              id: string;
+              name: string;
+              asset: {
+                  id: string;
+                  name: string;
+                  dependentProducts: Array<{
+                      id: string;
+                      name: string;
+                  }>;
+              };
+          };
+      };
+      createdBy: {
+          id: string;
+          email: string;
+      };
+      ctx: {
+          asset: string;
+          products: string[];
+          businessUnits: string[];
+      };
+      uploadMethod: string;
+  };
+}
 
 async function createTest(
   token: string,
@@ -277,7 +315,7 @@ async function createTest(
     uploadMethod?: UploadMethod
     productId?: string
   }
-): Promise<any> {
+): Promise<CreateTestResponse> {
   const {
     businessUnitId,
     createdByUserId,
@@ -397,7 +435,7 @@ async function createTestAsBinaryAnalysis(
     productId?: string
     uploadMethod: UploadMethod
   }
-): Promise<any> {
+): Promise<CreateTestResponse> {
   const {
     businessUnitId,
     createdByUserId,
@@ -801,7 +839,7 @@ export async function createNewAssetVersionAndUploadBinary(
   token: string,
   organizationContext: string,
   params: createNewAssetVersionAndUploadBinaryParams
-): Promise<any> {
+): Promise<LaunchBinaryUploadProcessingResponse> {
   const {
     createdByUserId,
     businessUnitId,
