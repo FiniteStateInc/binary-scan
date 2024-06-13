@@ -32604,23 +32604,6 @@ async function uploadBytesToUrl(url, bytes) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
 }
-/*async function uploadBytesToUrl(url: string, chunk: Buffer): Promise<any> {
-    try {
-        const response = await axios.put(url, chunk, {
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
-        });
-
-        return response;
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            throw new Error(`Upload to URL failed: ${error.response.statusText}`);
-        } else {
-            throw new Error(`Upload to URL failed: ${error.message}`);
-        }
-    }
-}*/
 async function* fileChunks(filePath, chunkSize = 1024 * 1024 * 64) {
     const fileStream = fs.createReadStream(filePath, { highWaterMark: chunkSize });
     try {
@@ -33330,11 +33313,14 @@ async function uploadBinary() {
             const response = await (0, fs_main_1.createNewAssetVersionAndUploadBinary)(token, organizationContext, params);
             core.info('File uploaded');
             core.setOutput('response', response);
-            const assetVersionResponse = await (0, utils_1.extractAssetVersion)(response);
-            if (!assetVersionResponse) {
+            const assetVersion = await (0, utils_1.extractAssetVersion)(response);
+            if (!assetVersion) {
                 core.setFailed(`Response from Finite state API invalid: ${response}`);
             }
-            const assetVersionUrl = await (0, utils_1.generateAssetVersionUrl)(params);
+            const assetVersionUrl = await (0, utils_1.generateAssetVersionUrl)({
+                assetId: params.assetId,
+                version: assetVersion
+            });
             core.setOutput('asset-version-url', response);
             core.info(`Asset version URL: ${assetVersionUrl}`);
             if (!automaticComment) {
@@ -33446,7 +33432,7 @@ async function generateComment(githubToken, assetVersionUrl) {
         await octokit.rest.issues.createComment({
             ...context.repo,
             issue_number: PRNumber,
-            body: commentBody.join()
+            body: commentBody.join('')
         });
         core.info(`Commented on PR #${PRNumber}`);
     }
