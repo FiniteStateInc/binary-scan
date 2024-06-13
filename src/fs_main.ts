@@ -148,23 +148,6 @@ async function uploadBytesToUrl(
     throw new Error(`Error: ${response.status} - ${response.statusText}`)
   }
 }
-/*async function uploadBytesToUrl(url: string, chunk: Buffer): Promise<any> {
-    try {
-        const response = await axios.put(url, chunk, {
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
-        });
-
-        return response;
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            throw new Error(`Upload to URL failed: ${error.response.statusText}`);
-        } else {
-            throw new Error(`Upload to URL failed: ${error.message}`);
-        }
-    }
-}*/
 
 async function* fileChunks(
   filePath: string,
