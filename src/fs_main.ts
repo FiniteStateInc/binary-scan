@@ -1,5 +1,6 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { ALL_ASSETS } from './fs_queries'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import * as fs from 'fs'
 
 export enum UploadMethod {
@@ -225,7 +226,7 @@ async function sendGraphqlQuery(
       throw new Error(`Error: ${response.status} - ${response.statusText}`)
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       throw new Error(
         `Error: ${error.response?.status} - ${error.response?.statusText}`
       )
@@ -645,7 +646,9 @@ async function getAllPaginatedResults(
       break
     }
 
-    variables!.after = cursor
+    if (variables !== undefined && variables !== null) {
+      variables.after = cursor
+    }
 
     // Add the next page of results to the list
     response = await sendGraphqlQuery(

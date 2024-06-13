@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import axios from 'axios'
 
 const AUDIENCE = 'https://platform.finitestate.io/api/v1/graphql'

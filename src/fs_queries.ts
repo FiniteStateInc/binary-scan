@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export interface AssetFilter {
   id?: string
   group?: { id: string }
