@@ -11,11 +11,11 @@ export type githubInputParamsType = {
   inputAssetId: string
   inputVersion: string
   inputFilePath: string
-  inputQuickScan: string
+  inputQuickScan: boolean
   inputBusinessUnitId: string
   inputCreatedByUserId: string
   inputProductId: string
   inputArtifactDescription: string
-  inputAutomaticComment: string
+  inputAutomaticComment: boolean
   inputGithubToken: string
 }

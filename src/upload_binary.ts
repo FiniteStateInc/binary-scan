@@ -31,14 +31,14 @@ export async function getInputs(): Promise<githubInputParamsType> {
     inputAssetId: core.getInput('ASSET-ID', { required: true }),
     inputVersion: core.getInput('VERSION', { required: true }),
     inputFilePath: core.getInput('FILE-PATH', { required: true }),
-    inputQuickScan: core.getInput('QUICK-SCAN'),
+    inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
 
     // non required parameters:
     inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
     inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
     inputProductId: core.getInput('PRODUCT-ID'),
     inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
-    inputAutomaticComment: core.getInput('AUTOMATIC-COMMENT'),
+    inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
     inputGithubToken: core.getInput('GITHUB-TOKEN')
   }
 }
@@ -46,29 +46,31 @@ export async function getInputs(): Promise<githubInputParamsType> {
 export async function uploadBinary(): Promise<
   createNewAssetVersionAndUploadBinaryResponseType | undefined
 > {
-  const envVariables = await getInputs()
+  const inputVariables = await getInputs()
   core.setSecret('FINITE-STATE-CLIENT-ID')
   core.setSecret('FINITE-STATE-SECRET')
   core.setSecret('FINITE-STATE-ORGANIZATION-CONTEXT')
 
-  const clientId = envVariables.inputFiniteStateClientId
-  const clientSecret = envVariables.inputFiniteStateSecret
-  const organizationContext = envVariables.inputFiniteStateOrganizationContext
-  const automaticComment = envVariables.inputAutomaticComment
-  const githubToken = envVariables.inputGithubToken
+  const clientId = inputVariables.inputFiniteStateClientId
+  const clientSecret = inputVariables.inputFiniteStateSecret
+  const organizationContext = inputVariables.inputFiniteStateOrganizationContext
+  const automaticComment = inputVariables.inputAutomaticComment
+  const githubToken = inputVariables.inputGithubToken
 
   const params: createNewAssetVersionAndUploadBinaryParams = {
-    assetId: envVariables.inputAssetId,
-    version: envVariables.inputVersion,
-    filePath: envVariables.inputFilePath,
-    createdByUserId: envVariables.inputCreatedByUserId,
-    businessUnitId: envVariables.inputBusinessUnitId,
-    productId: envVariables.inputProductId,
-    artifactDescription: envVariables.inputArtifactDescription,
-    quickScan: envVariables.inputQuickScan ? true : false,
+    assetId: inputVariables.inputAssetId,
+    version: inputVariables.inputVersion,
+    filePath: inputVariables.inputFilePath,
+    createdByUserId: inputVariables.inputCreatedByUserId,
+    businessUnitId: inputVariables.inputBusinessUnitId,
+    productId: inputVariables.inputProductId,
+    artifactDescription: inputVariables.inputArtifactDescription,
+    quickScan: inputVariables.inputQuickScan,
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
   core.info('Starting - Authentication')
+  core.info(automaticComment ? 'auto' : 'noauto')
+  core.info(params.quickScan ?  'quickscan' : 'noquickscan')
   let token: string | undefined
   try {
     token = await getAuthToken(clientId, clientSecret)
