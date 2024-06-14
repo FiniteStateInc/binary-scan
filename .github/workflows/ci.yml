@@ -73,7 +73,7 @@ jobs:
           version: ${{ github.sha }}
           file-path: ./src/esp-at.bin # Put the same path from the "Upload binary generated file" step here
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
-          automatic-comment: false # optional if you would like to generate the comment automatically in the PR
+          automatic-comment: true # optional if you would like to generate the comment automatically in the PR
 
       - name: Set response of binary scan
         if: steps.binary_scan.outcome=='success'
