@@ -33428,16 +33428,16 @@ async function getInputs() {
         }),
         inputFiniteStateOrganizationContext: core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true }),
         inputAssetId: core.getInput('ASSET-ID', { required: true }),
-        inputVersion: (0, utils_1.sanitizeStringInput)(core.getInput('VERSION', { required: true })),
-        inputFilePath: (0, utils_1.sanitizeFilePath)(core.getInput('FILE-PATH', { required: true })),
+        inputVersion: core.getInput('VERSION', { required: true }),
+        inputFilePath: core.getInput('FILE-PATH', { required: true }),
         inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
         // non required parameters:
-        inputBusinessUnitId: (0, utils_1.sanitizeStringInput)(core.getInput('BUSINESS-UNIT-ID')),
-        inputCreatedByUserId: (0, utils_1.sanitizeStringInput)(core.getInput('CREATED-BY-USER-ID')),
-        inputProductId: (0, utils_1.sanitizeStringInput)(core.getInput('PRODUCT-ID')),
-        inputArtifactDescription: (0, utils_1.sanitizeStringInput)(core.getInput('ARTIFACT-DESCRIPTION')),
+        inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
+        inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
+        inputProductId: core.getInput('PRODUCT-ID'),
+        inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
         inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-        inputGithubToken: (0, utils_1.sanitizeStringInput)(core.getInput('GITHUB-TOKEN'))
+        inputGithubToken: core.getInput('GITHUB-TOKEN')
     };
 }
 exports.getInputs = getInputs;

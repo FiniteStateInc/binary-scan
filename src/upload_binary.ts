@@ -5,12 +5,7 @@ import {
   createNewAssetVersionAndUploadBinary,
   createNewAssetVersionAndUploadBinaryParams
 } from './lib/fs/fs_main'
-import {
-  extractAssetVersion,
-  generateAssetVersionUrl,
-  sanitizeFilePath,
-  sanitizeStringInput
-} from './lib/utils/utils'
+import { extractAssetVersion, generateAssetVersionUrl } from './lib/utils/utils'
 import {
   generateComment,
   githubInputParamsType,
@@ -31,25 +26,17 @@ export async function getInputs(): Promise<githubInputParamsType> {
       { required: true }
     ),
     inputAssetId: core.getInput('ASSET-ID', { required: true }),
-    inputVersion: sanitizeStringInput(
-      core.getInput('VERSION', { required: true })
-    ),
-    inputFilePath: sanitizeFilePath(
-      core.getInput('FILE-PATH', { required: true })
-    ),
+    inputVersion: core.getInput('VERSION', { required: true }),
+    inputFilePath: core.getInput('FILE-PATH', { required: true }),
     inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
 
     // non required parameters:
-    inputBusinessUnitId: sanitizeStringInput(core.getInput('BUSINESS-UNIT-ID')),
-    inputCreatedByUserId: sanitizeStringInput(
-      core.getInput('CREATED-BY-USER-ID')
-    ),
-    inputProductId: sanitizeStringInput(core.getInput('PRODUCT-ID')),
-    inputArtifactDescription: sanitizeStringInput(
-      core.getInput('ARTIFACT-DESCRIPTION')
-    ),
+    inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
+    inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
+    inputProductId: core.getInput('PRODUCT-ID'),
+    inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
     inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-    inputGithubToken: sanitizeStringInput(core.getInput('GITHUB-TOKEN'))
+    inputGithubToken: core.getInput('GITHUB-TOKEN')
   }
 }
 
