@@ -20,11 +20,9 @@ import { createNewAssetVersionAndUploadBinaryResponseType } from './lib/fs/types
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
-    inputFiniteStateClientId: sanitizeStringInput(
-      core.getInput('FINITE-STATE-CLIENT-ID', {
-        required: true
-      })
-    ),
+    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
+      required: true
+    }),
     inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
       required: true
     }),
@@ -90,14 +88,6 @@ export async function uploadBinary(): Promise<
     quickScan,
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
-  core.info(assetId)
-  core.info(version)
-  core.info(filePath)
-  core.info(createdByUserId)
-  core.info(businessUnitId)
-  core.info(productId)
-  core.info(artifactDescription)
-  core.info(quickScan.toString())
 
   core.info('Starting - Authentication')
   let token: string | undefined

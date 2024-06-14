@@ -33420,9 +33420,9 @@ const utils_1 = __nccwpck_require__(2852);
 const github_utils_1 = __nccwpck_require__(6892);
 async function getInputs() {
     return {
-        inputFiniteStateClientId: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-CLIENT-ID', {
+        inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
             required: true
-        })),
+        }),
         inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
             required: true
         }),
@@ -33458,14 +33458,6 @@ async function uploadBinary() {
         quickScan,
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
-    core.info(assetId);
-    core.info(version);
-    core.info(filePath);
-    core.info(createdByUserId);
-    core.info(businessUnitId);
-    core.info(productId);
-    core.info(artifactDescription);
-    core.info(quickScan.toString());
     core.info('Starting - Authentication');
     let token;
     try {
