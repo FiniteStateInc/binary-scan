@@ -33458,7 +33458,14 @@ async function uploadBinary() {
         quickScan,
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
-    console.log(params);
+    core.info(assetId);
+    core.info(version);
+    core.info(filePath);
+    core.info(createdByUserId);
+    core.info(businessUnitId);
+    core.info(productId);
+    core.info(artifactDescription);
+    core.info(quickScan.toString());
     core.info('Starting - Authentication');
     let token;
     try {
