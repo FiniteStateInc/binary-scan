@@ -74,7 +74,7 @@ export async function uploadBinary(): Promise<
   core.info(JSON.stringify(params.quickScan))
   core.info(JSON.stringify(automaticComment))
   core.info(automaticComment ? 'auto' : 'noauto')
-  core.info(params.quickScan ?  'quickscan' : 'noquickscan')
+  core.info(params.quickScan ? 'quickscan' : 'noquickscan')
   let token: string | undefined
   try {
     token = await getAuthToken(clientId, clientSecret)
