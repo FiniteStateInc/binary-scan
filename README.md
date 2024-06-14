@@ -114,7 +114,7 @@ reference the **Inputs** section.
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v2.0.1
+uses: FiniteStateInc/binary-scan@v3.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -136,7 +136,7 @@ The following example includes optional parameters `github-token` and
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v1.1.0
+uses: FiniteStateInc/binary-scan@v3.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -204,7 +204,7 @@ jobs:
           path: # Put the path to your binary file generated in the previous step here
 
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v2.0.1
+        uses: FiniteStateInc/binary-scan@v3.0.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}
