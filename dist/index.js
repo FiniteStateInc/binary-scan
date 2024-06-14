@@ -994,7 +994,7 @@ exports.toCommandProperties = toCommandProperties;
 
 /***/ }),
 
-/***/ 4087:
+/***/ 2053:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -1086,7 +1086,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(4087));
+const Context = __importStar(__nccwpck_require__(2053));
 const utils_1 = __nccwpck_require__(3030);
 exports.context = new Context.Context();
 /**
@@ -1211,7 +1211,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(4087));
+const Context = __importStar(__nccwpck_require__(2053));
 const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
 const core_1 = __nccwpck_require__(6762);
@@ -32476,7 +32476,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 7288:
+/***/ 4087:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -32507,7 +32507,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createNewAssetVersionAndUploadBinary = exports.UploadMethod = void 0;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-const fs_queries_1 = __nccwpck_require__(2346);
+const fs_queries_1 = __nccwpck_require__(3153);
 const axios_1 = __importStar(__nccwpck_require__(8757));
 const fs = __importStar(__nccwpck_require__(7147));
 var UploadMethod;
@@ -33020,7 +33020,7 @@ exports.createNewAssetVersionAndUploadBinary = createNewAssetVersionAndUploadBin
 
 /***/ }),
 
-/***/ 2346:
+/***/ 3153:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -33112,7 +33112,7 @@ exports.ALL_ASSETS = {
 
 /***/ }),
 
-/***/ 3911:
+/***/ 7092:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -33161,6 +33161,167 @@ async function getAuthToken(clientId, clientSecret, tokenUrl = TOKEN_URL, audien
 }
 exports.getAuthToken = getAuthToken;
 exports["default"] = getAuthToken;
+
+
+/***/ }),
+
+/***/ 6892:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateComment = exports.isPullRequest = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
+async function isPullRequest() {
+    const context = github.context;
+    if (context.eventName !== 'pull_request') {
+        core.info('This context does not belongs to a pull request.');
+        return null;
+    }
+    return true;
+}
+exports.isPullRequest = isPullRequest;
+async function getPRNumber() {
+    if (!(await isPullRequest())) {
+        core.info('This context does not belongs to a pull request.');
+        return null;
+    }
+    const context = github.context;
+    const prNumber = context.payload.pull_request?.number;
+    if (!prNumber) {
+        core.setFailed('Pull request number is missing.');
+        return null;
+    }
+    return prNumber;
+}
+async function generateComment(githubToken, assetVersionUrl) {
+    const PRNumber = await getPRNumber();
+    const context = github.context;
+    if (PRNumber) {
+        const octokit = github.getOctokit(githubToken);
+        const commentBody = [
+            `**Hello**, Finite State is analyzing your files! :rocket:. \n`,
+            `Please, [click here](${assetVersionUrl}) to see the progress of the analysis.`,
+            `<br />\n`,
+            `[Finite State](https://platform.finitestate.io/)`
+        ];
+        await octokit.rest.issues.createComment({
+            ...context.repo,
+            issue_number: PRNumber,
+            body: commentBody.join('')
+        });
+        core.info(`Commented on PR #${PRNumber}`);
+    }
+}
+exports.generateComment = generateComment;
+
+
+/***/ }),
+
+/***/ 2852:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sanitizeStringInput = exports.sanitizeFilePath = exports.generateAssetVersionUrl = exports.extractAssetVersion = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+const path = __importStar(__nccwpck_require__(1017));
+async function extractAssetVersion(inputString) {
+    const str = inputString.launchBinaryUploadProcessing.key;
+    // Define a regular expression pattern to match the asset_version value
+    const pattern = /asset_version=(\d+)/;
+    // Use pattern to find the first match in the input string
+    const match = str.match(pattern);
+    // Check if a match was found and extract the value
+    if (match) {
+        const assetVersionValue = match[1];
+        return assetVersionValue;
+    }
+    else {
+        return null; // Return null if asset version value is not found
+    }
+}
+exports.extractAssetVersion = extractAssetVersion;
+async function generateAssetVersionUrl(params) {
+    return `https://platform.finitestate.io/artifacts/${params.assetId}/versions/${params.version}`;
+}
+exports.generateAssetVersionUrl = generateAssetVersionUrl;
+/**
+ * Validate and sanitize the file path to prevent directory traversal attacks.
+ * @param {string} filePath - The file path to validate.
+ * @returns {string} The sanitized and validated file path.
+ * @throws Will throw an error if the file path is invalid.
+ */
+function sanitizeFilePath(filePath) {
+    const resolvedPath = path.resolve(filePath);
+    if (!fs.existsSync(resolvedPath)) {
+        throw new Error(`File path ${resolvedPath} does not exist.`);
+    }
+    return resolvedPath;
+}
+exports.sanitizeFilePath = sanitizeFilePath;
+/**
+ * Validate and sanitize string inputs to prevent injection attacks.
+ * @param {string} input - The input string to validate.
+ * @returns {string} The sanitized input string.
+ * @throws Will throw an error if the input is invalid.
+ */
+function sanitizeStringInput(input) {
+    if (!input || typeof input !== 'string') {
+        throw new Error(`Invalid input: ${input}`);
+    }
+    return input.replace(/[^\w\s-]/gi, ''); // Remove any non-alphanumeric, space, or hyphen characters
+}
+exports.sanitizeStringInput = sanitizeStringInput;
 
 
 /***/ }),
@@ -33253,29 +33414,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadBinary = exports.getInputs = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-const fs_token_1 = __importDefault(__nccwpck_require__(3911));
-const fs_main_1 = __nccwpck_require__(7288);
-const utils_1 = __nccwpck_require__(1314);
+const fs_token_1 = __importDefault(__nccwpck_require__(7092));
+const fs_main_1 = __nccwpck_require__(4087);
+const utils_1 = __nccwpck_require__(2852);
+const github_utils_1 = __nccwpck_require__(6892);
 async function getInputs() {
     return {
-        inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
+        inputFiniteStateClientId: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-CLIENT-ID', {
             required: true
-        }),
-        inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
+        })),
+        inputFiniteStateSecret: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-SECRET', {
             required: true
-        }),
-        inputFiniteStateOrganizationContext: core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true }),
-        inputAssetId: core.getInput('ASSET-ID', { required: true }),
-        inputVersion: core.getInput('VERSION', { required: true }),
-        inputFilePath: core.getInput('FILE-PATH', { required: true }),
+        })),
+        inputFiniteStateOrganizationContext: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })),
+        inputAssetId: (0, utils_1.sanitizeStringInput)(core.getInput('ASSET-ID', { required: true })),
+        inputVersion: (0, utils_1.sanitizeStringInput)(core.getInput('VERSION', { required: true })),
+        inputFilePath: (0, utils_1.sanitizeFilePath)(core.getInput('FILE-PATH', { required: true })),
         inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
         // non required parameters:
-        inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
-        inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
-        inputProductId: core.getInput('PRODUCT-ID'),
-        inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
+        inputBusinessUnitId: (0, utils_1.sanitizeStringInput)(core.getInput('BUSINESS-UNIT-ID')),
+        inputCreatedByUserId: (0, utils_1.sanitizeStringInput)(core.getInput('CREATED-BY-USER-ID')),
+        inputProductId: (0, utils_1.sanitizeStringInput)(core.getInput('PRODUCT-ID')),
+        inputArtifactDescription: (0, utils_1.sanitizeStringInput)(core.getInput('ARTIFACT-DESCRIPTION')),
         inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-        inputGithubToken: core.getInput('GITHUB-TOKEN')
+        inputGithubToken: (0, utils_1.sanitizeStringInput)(core.getInput('GITHUB-TOKEN'))
     };
 }
 exports.getInputs = getInputs;
@@ -33329,9 +33491,9 @@ async function uploadBinary() {
                 core.info('Automatic comment disabled');
             }
             else {
-                if (await (0, utils_1.isPullRequest)()) {
+                if (await (0, github_utils_1.isPullRequest)()) {
                     core.info('Automatic comment enabled. Generating comment...');
-                    (0, utils_1.generateComment)(githubToken, assetVersionUrl);
+                    (0, github_utils_1.generateComment)(githubToken, assetVersionUrl);
                 }
                 else {
                     core.info("Automatic comment enabled. But this isn't a pull request. Skip generating comment...");
@@ -33346,104 +33508,6 @@ async function uploadBinary() {
     }
 }
 exports.uploadBinary = uploadBinary;
-
-
-/***/ }),
-
-/***/ 1314:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateAssetVersionUrl = exports.generateComment = exports.isPullRequest = exports.extractAssetVersion = void 0;
-const core = __importStar(__nccwpck_require__(2186));
-const github = __importStar(__nccwpck_require__(5438));
-async function extractAssetVersion(inputString) {
-    const str = inputString.launchBinaryUploadProcessing.key;
-    // Define a regular expression pattern to match the asset_version value
-    const pattern = /asset_version=(\d+)/;
-    // Use pattern to find the first match in the input string
-    const match = str.match(pattern);
-    // Check if a match was found and extract the value
-    if (match) {
-        const assetVersionValue = match[1];
-        return assetVersionValue;
-    }
-    else {
-        return null; // Return null if asset version value is not found
-    }
-}
-exports.extractAssetVersion = extractAssetVersion;
-async function isPullRequest() {
-    const context = github.context;
-    if (context.eventName !== 'pull_request') {
-        core.info('This context does not belongs to a pull request.');
-        return null;
-    }
-    return true;
-}
-exports.isPullRequest = isPullRequest;
-async function getPRNumber() {
-    if (!(await isPullRequest())) {
-        core.info('This context does not belongs to a pull request.');
-        return null;
-    }
-    const context = github.context;
-    const prNumber = context.payload.pull_request?.number;
-    if (!prNumber) {
-        core.setFailed('Pull request number is missing.');
-        return null;
-    }
-    return prNumber;
-}
-async function generateComment(githubToken, assetVersionUrl) {
-    const PRNumber = await getPRNumber();
-    const context = github.context;
-    if (PRNumber) {
-        const octokit = github.getOctokit(githubToken);
-        const commentBody = [
-            `**Hello**, Finite State is analyzing your files! :rocket:. \n`,
-            `Please, [click here](${assetVersionUrl}) to see the progress of the analysis.`,
-            `<br />\n`,
-            `[Finite State](https://platform.finitestate.io/)`
-        ];
-        await octokit.rest.issues.createComment({
-            ...context.repo,
-            issue_number: PRNumber,
-            body: commentBody.join('')
-        });
-        core.info(`Commented on PR #${PRNumber}`);
-    }
-}
-exports.generateComment = generateComment;
-async function generateAssetVersionUrl(params) {
-    return `https://platform.finitestate.io/artifacts/${params.assetId}/versions/${params.version}`;
-}
-exports.generateAssetVersionUrl = generateAssetVersionUrl;
 
 
 /***/ }),

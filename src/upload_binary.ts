@@ -1,45 +1,60 @@
 import * as core from '@actions/core'
-import getAuthToken from './fs_token'
+import getAuthToken from './lib/fs/fs_token'
 import {
   UploadMethod,
   createNewAssetVersionAndUploadBinary,
   createNewAssetVersionAndUploadBinaryParams
-} from './fs_main'
+} from './lib/fs/fs_main'
 import {
   extractAssetVersion,
   generateAssetVersionUrl,
-  generateComment,
-  isPullRequest
-} from './utils'
+  sanitizeFilePath,
+  sanitizeStringInput
+} from './lib/utils/utils'
 import {
-  createNewAssetVersionAndUploadBinaryResponseType,
-  githubInputParamsType
-} from './types'
+  generateComment,
+  githubInputParamsType,
+  isPullRequest
+} from './lib/utils/github_utils'
+import { createNewAssetVersionAndUploadBinaryResponseType } from './lib/fs/types'
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
-    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
-      required: true
-    }),
-    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
-      required: true
-    }),
-    inputFiniteStateOrganizationContext: core.getInput(
-      'FINITE-STATE-ORGANIZATION-CONTEXT',
-      { required: true }
+    inputFiniteStateClientId: sanitizeStringInput(
+      core.getInput('FINITE-STATE-CLIENT-ID', {
+        required: true
+      })
     ),
-    inputAssetId: core.getInput('ASSET-ID', { required: true }),
-    inputVersion: core.getInput('VERSION', { required: true }),
-    inputFilePath: core.getInput('FILE-PATH', { required: true }),
+    inputFiniteStateSecret: sanitizeStringInput(
+      core.getInput('FINITE-STATE-SECRET', {
+        required: true
+      })
+    ),
+    inputFiniteStateOrganizationContext: sanitizeStringInput(
+      core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })
+    ),
+    inputAssetId: sanitizeStringInput(
+      core.getInput('ASSET-ID', { required: true })
+    ),
+    inputVersion: sanitizeStringInput(
+      core.getInput('VERSION', { required: true })
+    ),
+    inputFilePath: sanitizeFilePath(
+      core.getInput('FILE-PATH', { required: true })
+    ),
     inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
 
     // non required parameters:
-    inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
-    inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
-    inputProductId: core.getInput('PRODUCT-ID'),
-    inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
+    inputBusinessUnitId: sanitizeStringInput(core.getInput('BUSINESS-UNIT-ID')),
+    inputCreatedByUserId: sanitizeStringInput(
+      core.getInput('CREATED-BY-USER-ID')
+    ),
+    inputProductId: sanitizeStringInput(core.getInput('PRODUCT-ID')),
+    inputArtifactDescription: sanitizeStringInput(
+      core.getInput('ARTIFACT-DESCRIPTION')
+    ),
     inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-    inputGithubToken: core.getInput('GITHUB-TOKEN')
+    inputGithubToken: sanitizeStringInput(core.getInput('GITHUB-TOKEN'))
   }
 }
 

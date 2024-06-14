@@ -1,25 +1,5 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import { createNewAssetVersionAndUploadBinaryResponseType } from './types'
-
-export async function extractAssetVersion(
-  inputString: createNewAssetVersionAndUploadBinaryResponseType
-): Promise<string | null> {
-  const str = inputString.launchBinaryUploadProcessing.key
-  // Define a regular expression pattern to match the asset_version value
-  const pattern = /asset_version=(\d+)/
-
-  // Use pattern to find the first match in the input string
-  const match = str.match(pattern)
-
-  // Check if a match was found and extract the value
-  if (match) {
-    const assetVersionValue = match[1]
-    return assetVersionValue
-  } else {
-    return null // Return null if asset version value is not found
-  }
-}
 
 export async function isPullRequest(): Promise<true | null> {
   const context = github.context
@@ -71,9 +51,18 @@ export async function generateComment(
   }
 }
 
-export async function generateAssetVersionUrl(params: {
-  assetId: string
-  version: string
-}): Promise<string> {
-  return `https://platform.finitestate.io/artifacts/${params.assetId}/versions/${params.version}`
+export type githubInputParamsType = {
+  inputFiniteStateClientId: string
+  inputFiniteStateSecret: string
+  inputFiniteStateOrganizationContext: string
+  inputAssetId: string
+  inputVersion: string
+  inputFilePath: string
+  inputQuickScan: boolean
+  inputBusinessUnitId: string
+  inputCreatedByUserId: string
+  inputProductId: string
+  inputArtifactDescription: string
+  inputAutomaticComment: boolean
+  inputGithubToken: string
 }
