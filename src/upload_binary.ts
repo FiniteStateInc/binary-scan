@@ -76,6 +76,7 @@ export async function uploadBinary(): Promise<
     core.setFailed(
       `Caught an exception trying to get and auth token on Finite State: ${error}`
     )
+    core.setOutput('error', error)
   }
   if (token) {
     try {
@@ -90,6 +91,7 @@ export async function uploadBinary(): Promise<
       const assetVersion = await extractAssetVersion(response)
       if (!assetVersion) {
         core.setFailed(`Response from Finite state API invalid: ${response}`)
+        core.setOutput('error', assetVersion)
       }
 
       const assetVersionUrl = await generateAssetVersionUrl({

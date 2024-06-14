@@ -33301,18 +33301,13 @@ async function uploadBinary() {
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
     core.info('Starting - Authentication');
-    console.log(automaticComment, params.quickScan);
-    core.info(automaticComment.toString());
-    core.info(JSON.stringify(params.quickScan));
-    core.info(JSON.stringify(automaticComment));
-    core.info(automaticComment ? 'auto' : 'noauto');
-    core.info(params.quickScan ? 'quickscan' : 'noquickscan');
     let token;
     try {
         token = await (0, fs_token_1.default)(clientId, clientSecret);
     }
     catch (error) {
         core.setFailed(`Caught an exception trying to get and auth token on Finite State: ${error}`);
+        core.setOutput('error', error);
     }
     if (token) {
         try {
@@ -33322,6 +33317,7 @@ async function uploadBinary() {
             const assetVersion = await (0, utils_1.extractAssetVersion)(response);
             if (!assetVersion) {
                 core.setFailed(`Response from Finite state API invalid: ${response}`);
+                core.setOutput('error', assetVersion);
             }
             const assetVersionUrl = await (0, utils_1.generateAssetVersionUrl)({
                 assetId: params.assetId,
