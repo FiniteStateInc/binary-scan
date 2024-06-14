@@ -33272,7 +33272,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sanitizeStringInput = exports.sanitizeFilePath = exports.generateAssetVersionUrl = exports.extractAssetVersion = void 0;
+exports.sanitizeInput = exports.sanitizeFilePath = exports.generateAssetVersionUrl = exports.extractAssetVersion = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const path = __importStar(__nccwpck_require__(1017));
 async function extractAssetVersion(inputString) {
@@ -33309,19 +33309,25 @@ function sanitizeFilePath(filePath) {
     return resolvedPath;
 }
 exports.sanitizeFilePath = sanitizeFilePath;
-/**
- * Validate and sanitize string inputs to prevent injection attacks.
- * @param {string} input - The input string to validate.
- * @returns {string} The sanitized input string.
- * @throws Will throw an error if the input is invalid.
- */
-function sanitizeStringInput(input) {
-    if (!input || typeof input !== 'string') {
-        throw new Error(`Invalid input: ${input}`);
+function sanitizeInput(input) {
+    if (input === null || input === undefined) {
+        return input; // Return null or undefined as-is
     }
-    return input.replace(/[^\w\s-]/gi, ''); // Remove any non-alphanumeric, space, or hyphen characters
+    if (typeof input === 'number') {
+        return input; // Return number as-is
+    }
+    if (typeof input !== 'string') {
+        return null; // Reject inputs that are neither string nor number
+    }
+    // For string inputs:
+    // Trim whitespace from both ends
+    let sanitizedInput = input.trim();
+    // Escape special characters that could interfere with commands or queries
+    sanitizedInput = sanitizedInput.replace(/[;<>&|'"]/g, '');
+    // Additional validation or whitelisting based on your specific requirements
+    return sanitizedInput;
 }
-exports.sanitizeStringInput = sanitizeStringInput;
+exports.sanitizeInput = sanitizeInput;
 
 
 /***/ }),
@@ -33420,24 +33426,24 @@ const utils_1 = __nccwpck_require__(2852);
 const github_utils_1 = __nccwpck_require__(6892);
 async function getInputs() {
     return {
-        inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
+        inputFiniteStateClientId: (0, utils_1.sanitizeInput)(core.getInput('FINITE-STATE-CLIENT-ID', {
             required: true
-        }),
-        inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
+        })),
+        inputFiniteStateSecret: (0, utils_1.sanitizeInput)(core.getInput('FINITE-STATE-SECRET', {
             required: true
-        }),
-        inputFiniteStateOrganizationContext: core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true }),
-        inputAssetId: core.getInput('ASSET-ID', { required: true }),
-        inputVersion: core.getInput('VERSION', { required: true }),
+        })),
+        inputFiniteStateOrganizationContext: (0, utils_1.sanitizeInput)(core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })),
+        inputAssetId: (0, utils_1.sanitizeInput)(core.getInput('ASSET-ID', { required: true })),
+        inputVersion: (0, utils_1.sanitizeInput)(core.getInput('VERSION', { required: true })),
         inputFilePath: core.getInput('FILE-PATH', { required: true }),
         inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
         // non required parameters:
-        inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
-        inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
-        inputProductId: core.getInput('PRODUCT-ID'),
-        inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
-        inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-        inputGithubToken: core.getInput('GITHUB-TOKEN')
+        inputBusinessUnitId: (0, utils_1.sanitizeInput)(core.getInput('BUSINESS-UNIT-ID')),
+        inputCreatedByUserId: (0, utils_1.sanitizeInput)(core.getInput('CREATED-BY-USER-ID')),
+        inputProductId: (0, utils_1.sanitizeInput)(core.getInput('PRODUCT-ID')),
+        inputArtifactDescription: (0, utils_1.sanitizeInput)(core.getInput('ARTIFACT-DESCRIPTION')),
+        inputAutomaticComment: (0, utils_1.sanitizeInput)(core.getBooleanInput('AUTOMATIC-COMMENT')),
+        inputGithubToken: (0, utils_1.sanitizeInput)(core.getInput('GITHUB-TOKEN'))
     };
 }
 exports.getInputs = getInputs;

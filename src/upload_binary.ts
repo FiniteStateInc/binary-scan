@@ -5,7 +5,11 @@ import {
   createNewAssetVersionAndUploadBinary,
   createNewAssetVersionAndUploadBinaryParams
 } from './lib/fs/fs_main'
-import { extractAssetVersion, generateAssetVersionUrl } from './lib/utils/utils'
+import {
+  extractAssetVersion,
+  generateAssetVersionUrl,
+  sanitizeInput
+} from './lib/utils/utils'
 import {
   generateComment,
   githubInputParamsType,
@@ -15,28 +19,35 @@ import { createNewAssetVersionAndUploadBinaryResponseType } from './lib/fs/types
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
-    inputFiniteStateClientId: core.getInput('FINITE-STATE-CLIENT-ID', {
-      required: true
-    }),
-    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
-      required: true
-    }),
-    inputFiniteStateOrganizationContext: core.getInput(
-      'FINITE-STATE-ORGANIZATION-CONTEXT',
-      { required: true }
+    inputFiniteStateClientId: sanitizeInput(
+      core.getInput('FINITE-STATE-CLIENT-ID', {
+        required: true
+      })
     ),
-    inputAssetId: core.getInput('ASSET-ID', { required: true }),
-    inputVersion: core.getInput('VERSION', { required: true }),
+    inputFiniteStateSecret: sanitizeInput(
+      core.getInput('FINITE-STATE-SECRET', {
+        required: true
+      })
+    ),
+    inputFiniteStateOrganizationContext: sanitizeInput(
+      core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })
+    ),
+    inputAssetId: sanitizeInput(core.getInput('ASSET-ID', { required: true })),
+    inputVersion: sanitizeInput(core.getInput('VERSION', { required: true })),
     inputFilePath: core.getInput('FILE-PATH', { required: true }),
     inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
 
     // non required parameters:
-    inputBusinessUnitId: core.getInput('BUSINESS-UNIT-ID'),
-    inputCreatedByUserId: core.getInput('CREATED-BY-USER-ID'),
-    inputProductId: core.getInput('PRODUCT-ID'),
-    inputArtifactDescription: core.getInput('ARTIFACT-DESCRIPTION'),
-    inputAutomaticComment: core.getBooleanInput('AUTOMATIC-COMMENT'),
-    inputGithubToken: core.getInput('GITHUB-TOKEN')
+    inputBusinessUnitId: sanitizeInput(core.getInput('BUSINESS-UNIT-ID')),
+    inputCreatedByUserId: sanitizeInput(core.getInput('CREATED-BY-USER-ID')),
+    inputProductId: sanitizeInput(core.getInput('PRODUCT-ID')),
+    inputArtifactDescription: sanitizeInput(
+      core.getInput('ARTIFACT-DESCRIPTION')
+    ),
+    inputAutomaticComment: sanitizeInput(
+      core.getBooleanInput('AUTOMATIC-COMMENT')
+    ),
+    inputGithubToken: sanitizeInput(core.getInput('GITHUB-TOKEN'))
   }
 }
 

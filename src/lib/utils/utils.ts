@@ -42,15 +42,27 @@ export function sanitizeFilePath(filePath: string): string {
   return resolvedPath
 }
 
-/**
- * Validate and sanitize string inputs to prevent injection attacks.
- * @param {string} input - The input string to validate.
- * @returns {string} The sanitized input string.
- * @throws Will throw an error if the input is invalid.
- */
-export function sanitizeStringInput(input: string): string {
-  if (!input || typeof input !== 'string') {
-    throw new Error(`Invalid input: ${input}`)
+export function sanitizeInput(input: any) {
+  if (input === null || input === undefined) {
+    return input // Return null or undefined as-is
   }
-  return input.replace(/[^\w\s-]/gi, '') // Remove any non-alphanumeric, space, or hyphen characters
+
+  if (typeof input === 'number') {
+    return input // Return number as-is
+  }
+
+  if (typeof input !== 'string') {
+    return null // Reject inputs that are neither string nor number
+  }
+
+  // For string inputs:
+  // Trim whitespace from both ends
+  let sanitizedInput = input.trim()
+
+  // Escape special characters that could interfere with commands or queries
+  sanitizedInput = sanitizedInput.replace(/[;<>&|'"]/g, '')
+
+  // Additional validation or whitelisting based on your specific requirements
+
+  return sanitizedInput
 }
