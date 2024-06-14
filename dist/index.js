@@ -33446,20 +33446,16 @@ async function uploadBinary() {
     core.setSecret('FINITE-STATE-CLIENT-ID');
     core.setSecret('FINITE-STATE-SECRET');
     core.setSecret('FINITE-STATE-ORGANIZATION-CONTEXT');
-    const clientId = inputVariables.inputFiniteStateClientId;
-    const clientSecret = inputVariables.inputFiniteStateSecret;
-    const organizationContext = inputVariables.inputFiniteStateOrganizationContext;
-    const automaticComment = inputVariables.inputAutomaticComment;
-    const githubToken = inputVariables.inputGithubToken;
+    const { inputFiniteStateClientId: clientId, inputFiniteStateSecret: clientSecret, inputFiniteStateOrganizationContext: organizationContext, inputAutomaticComment: automaticComment, inputGithubToken: githubToken, inputAssetId: assetId, inputVersion: version, inputFilePath: filePath, inputCreatedByUserId: createdByUserId, inputBusinessUnitId: businessUnitId, inputProductId: productId, inputArtifactDescription: artifactDescription, inputQuickScan: quickScan } = inputVariables;
     const params = {
-        assetId: inputVariables.inputAssetId,
-        version: inputVariables.inputVersion,
-        filePath: inputVariables.inputFilePath,
-        createdByUserId: inputVariables.inputCreatedByUserId,
-        businessUnitId: inputVariables.inputBusinessUnitId,
-        productId: inputVariables.inputProductId,
-        artifactDescription: inputVariables.inputArtifactDescription,
-        quickScan: inputVariables.inputQuickScan,
+        assetId,
+        version,
+        filePath,
+        createdByUserId,
+        businessUnitId,
+        productId,
+        artifactDescription,
+        quickScan,
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
     core.info('Starting - Authentication');
