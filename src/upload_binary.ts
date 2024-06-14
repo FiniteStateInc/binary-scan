@@ -25,17 +25,14 @@ export async function getInputs(): Promise<githubInputParamsType> {
         required: true
       })
     ),
-    inputFiniteStateSecret: sanitizeStringInput(
-      core.getInput('FINITE-STATE-SECRET', {
-        required: true
-      })
+    inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
+      required: true
+    }),
+    inputFiniteStateOrganizationContext: core.getInput(
+      'FINITE-STATE-ORGANIZATION-CONTEXT',
+      { required: true }
     ),
-    inputFiniteStateOrganizationContext: sanitizeStringInput(
-      core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })
-    ),
-    inputAssetId: sanitizeStringInput(
-      core.getInput('ASSET-ID', { required: true })
-    ),
+    inputAssetId: core.getInput('ASSET-ID', { required: true }),
     inputVersion: sanitizeStringInput(
       core.getInput('VERSION', { required: true })
     ),
@@ -107,9 +104,9 @@ export async function uploadBinary(): Promise<
   try {
     token = await getAuthToken(clientId, clientSecret)
   } catch (error) {
-    core.setFailed(
-      `Caught an exception trying to get and auth token on Finite State: ${error}`
-    )
+    const msgError = `Caught an exception trying to get and auth token on Finite State: ${error}`
+    core.error(msgError)
+    core.setFailed(msgError)
     core.setOutput('error', error)
   }
   if (token) {

@@ -33423,11 +33423,11 @@ async function getInputs() {
         inputFiniteStateClientId: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-CLIENT-ID', {
             required: true
         })),
-        inputFiniteStateSecret: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-SECRET', {
+        inputFiniteStateSecret: core.getInput('FINITE-STATE-SECRET', {
             required: true
-        })),
-        inputFiniteStateOrganizationContext: (0, utils_1.sanitizeStringInput)(core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true })),
-        inputAssetId: (0, utils_1.sanitizeStringInput)(core.getInput('ASSET-ID', { required: true })),
+        }),
+        inputFiniteStateOrganizationContext: core.getInput('FINITE-STATE-ORGANIZATION-CONTEXT', { required: true }),
+        inputAssetId: core.getInput('ASSET-ID', { required: true }),
         inputVersion: (0, utils_1.sanitizeStringInput)(core.getInput('VERSION', { required: true })),
         inputFilePath: (0, utils_1.sanitizeFilePath)(core.getInput('FILE-PATH', { required: true })),
         inputQuickScan: core.getBooleanInput('QUICK-SCAN'),
@@ -33472,7 +33472,9 @@ async function uploadBinary() {
         token = await (0, fs_token_1.default)(clientId, clientSecret);
     }
     catch (error) {
-        core.setFailed(`Caught an exception trying to get and auth token on Finite State: ${error}`);
+        const msgError = `Caught an exception trying to get and auth token on Finite State: ${error}`;
+        core.error(msgError);
+        core.setFailed(msgError);
         core.setOutput('error', error);
     }
     if (token) {
