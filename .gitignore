@@ -101,3 +101,4 @@ __tests__/runner/*
 .idea
 .vscode
 *.code-workspace
+src/lib/utils/example_binary/TL-WR841HPv1.bin

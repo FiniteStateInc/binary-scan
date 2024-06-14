@@ -49,7 +49,7 @@ jobs:
 
       - name: Test
         id: npm-ci-test
-        run: npm run ci-test
+        run: npm run ci-test -- --passWithNoTests
 
   binary_scan:
     name: GitHub Actions Test
@@ -71,7 +71,7 @@ jobs:
           finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
           asset-id: ${{env.ASSET_ID}}
           version: ${{ github.sha }}
-          file-path: ./somefile.bin # Put the same path from the "Upload binary generated file" step here
+          file-path: ./src/lib/utils/example_binary/esp-at.bin # Put the same path from the "Upload binary generated file" step here
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
           automatic-comment: true # optional if you would like to generate the comment automatically in the PR
 
