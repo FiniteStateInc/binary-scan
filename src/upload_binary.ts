@@ -54,15 +54,6 @@ export async function getInputs(): Promise<githubInputParamsType> {
 export async function uploadBinary(): Promise<
   createNewAssetVersionAndUploadBinaryResponseType | undefined
 > {
-  console.log(1,sanitizeInput(
-    core.getBooleanInput('AUTOMATIC-COMMENT')
-  ));
-  console.log(2,core.getBooleanInput('AUTOMATIC-COMMENT'));
-  core.info(sanitizeInput(
-    core.getBooleanInput('AUTOMATIC-COMMENT')
-  ));
-  core.info(core.getInput('AUTOMATIC-COMMENT') );
-  
   const inputVariables = await getInputs()
   core.setSecret('FINITE-STATE-CLIENT-ID')
   core.setSecret('FINITE-STATE-SECRET')
