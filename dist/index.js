@@ -33704,7 +33704,7 @@ async function uploadBinary() {
                 assetId: params.assetId,
                 version: assetVersion
             });
-            core.setOutput('asset-version-url', response);
+            core.setOutput('asset-version-url', assetVersionUrl);
             core.info(`Asset version URL: ${assetVersionUrl}`);
             if (!automaticComment) {
                 core.info('Automatic comment disabled');
