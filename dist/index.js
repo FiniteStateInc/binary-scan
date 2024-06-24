@@ -33679,8 +33679,6 @@ async function uploadBinary() {
         quickScan,
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
-    core.info(JSON.stringify(inputVariables));
-    console.log(inputVariables);
     core.info('Starting - Authentication');
     let token;
     try {
