@@ -95,14 +95,9 @@ jobs:
         if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
         id: set_response_linux
         run: |
-          json='{
-            "asset-version-url": "${{ steps.binary_scan.outputs.asset-version-url }}",
-            "response": "${{ steps.binary_scan.outputs.response }}",
-            "error": "${{ steps.binary_scan.outputs.error }}"
-          }'
-          echo "Asset version URL: $(echo "$json" | jq -r '.asset-version-url')"
-          echo "Response: $(echo "$json" | jq -r '.response')"
-          echo "Error: $(echo "$json" | jq -r '.error')"
+          echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+          echo Response: "${{steps.binary_scan.outputs.response}}"
+          echo Error: "${{steps.binary_scan.outputs.error}}"
         env:
           ASSET_VERSION_URL: ${{ steps.binary_scan.outputs.asset-version-url }}
           RESPONSE: ${{ steps.binary_scan.outputs.response }}
