@@ -85,11 +85,11 @@ jobs:
         run: |
           $assetVersionUrl = '${{ steps.binary_scan.outputs.asset-version-url }}'
           $response = '${{ steps.binary_scan.outputs.response }}'
-          $error = '${{ steps.binary_scan.outputs.error }}'
+          $errorMsg = '${{ steps.binary_scan.outputs.error }}'
 
           Write-Output "Asset version URL: $assetVersionUrl"
           Write-Output "Response: $response"
-          Write-Output "Error: $error"
+          Write-Output "Error: $errorMsg"
 
       - name: Set response of binary scan on Linux
         if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
