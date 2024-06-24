@@ -94,33 +94,67 @@ example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
 action in the same repository.
 
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-    with:
-      ref: ${{ github.event.pull_request.head.ref }}
+binary_scan:
+  name: GitHub Actions Test
+  runs-on: ${{ matrix.os }}
 
-  - name: Binary Scan
-    id: binary_scan
-    uses: ./
-    with:
-      finite-state-client-id: ${{ secrets.CLIENT_ID }}
-      finite-state-secret: ${{ secrets.CLIENT_SECRET }}
-      finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
-      asset-id: ${{env.ASSET_ID}}
-      version: ${{ github.sha }}
-      file-path: ./somefile.bin # Put the same path from the "Upload binary generated file" step here
-      github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
-      automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+  strategy:
+    matrix:
+      os: [windows-latest, ubuntu-latest]
 
-  - name: Set response of binary scan
-    if: steps.binary_scan.outcome=='success'
-    id: set_response
-    run: |
-      echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
-      echo Response: "${{steps.binary_scan.outputs.response}}"
-      echo Error: "${{steps.binary_scan.outputs.error}}"
+  steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Binary Scan
+      id: binary_scan
+      uses: ./
+      with:
+        finite-state-client-id: ${{ secrets.CLIENT_ID }}
+        finite-state-secret: ${{ secrets.CLIENT_SECRET }}
+        finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
+        asset-id: ${{env.ASSET_ID}}
+        version: ${{ github.sha }}
+        file-path: ./src/lib/utils/example_binary/esp-at.bin # Put the same path from the "Upload binary generated file" step here
+        github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
+        automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+
+    - name: Set response of binary scan on Windows
+      if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
+      id: set_response_windows
+      run: |
+        $json = @"
+        {
+          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
+          "response": "${{steps.binary_scan.outputs.response}}",
+          "error": "${{steps.binary_scan.outputs.error}}"
+        }
+        "@
+        Write-Output "Asset version URL: $($json.'asset-version-url')"
+        Write-Output "Response: $($json.response)"
+        Write-Output "Error: $($json.error)"
+      shell: pwsh
+
+    - name: Set response of binary scan on Linux
+      if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
+      id: set_response_linux
+      run: |
+        json='{
+          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
+          "response": "${{steps.binary_scan.outputs.response}}",
+          "error": "${{steps.binary_scan.outputs.error}}"
+        }'
+        echo "Asset version URL: $(echo $json | jq -r '.asset-version-url')"
+        echo "Response: $(echo $json | jq -r '.response')"
+        echo "Error: $(echo $json | jq -r '.error')"
+      shell: bash
+      env:
+        ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
+        RESPONSE: ${{steps.binary_scan.outputs.response}}
+        ERROR: ${{steps.binary_scan.outputs.error}}
 ```
 
 ## Usage
@@ -135,31 +169,65 @@ To include the action in a workflow in another repository, you can use the
 hash.
 
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-    with:
-      ref: ${{ github.event.pull_request.head.ref }}
+binary_scan:
+  name: GitHub Actions Test
+  runs-on: ${{ matrix.os }}
 
-  - name: Finite State Binary Scan
-    id: binary_scan
-    uses: FiniteStateInc/binary-scan@v2.0.1
-    with:
-      finite-state-client-id: ${{ secrets.CLIENT_ID }}
-      finite-state-secret: ${{ secrets.CLIENT_SECRET }}
-      finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
-      asset-id: ${{env.ASSET_ID}}
-      version: ${{ github.sha }}
-      file-path: ./somefile.bin # Put the same path from the "Upload binary generated file" step here
-      github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
-      automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+  strategy:
+    matrix:
+      os: [windows-latest, ubuntu-latest]
 
-  - name: Set response of binary scan
-    if: steps.binary_scan.outcome=='success'
-    id: set_response
-    run: |
-      echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
-      echo Response: "${{steps.binary_scan.outputs.response}}"
-      echo Error: "${{steps.binary_scan.outputs.error}}"
+  steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Binary Scan
+      id: binary_scan
+      uses: FiniteStateInc/binary-scan@v3.0.0
+      with:
+        finite-state-client-id: ${{ secrets.CLIENT_ID }}
+        finite-state-secret: ${{ secrets.CLIENT_SECRET }}
+        finite-state-organization-context: ${{ secrets.ORGANIZATION_CONTEXT }}
+        asset-id: ${{env.ASSET_ID}}
+        version: ${{ github.sha }}
+        file-path: ./src/lib/utils/example_binary/esp-at.bin # Put the same path from the "Upload binary generated file" step here
+        github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
+        automatic-comment: true # optional if you would like to generate the comment automatically in the PR
+
+    - name: Set response of binary scan on Windows
+      if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
+      id: set_response_windows
+      run: |
+        $json = @"
+        {
+          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
+          "response": "${{steps.binary_scan.outputs.response}}",
+          "error": "${{steps.binary_scan.outputs.error}}"
+        }
+        "@
+        Write-Output "Asset version URL: $($json.'asset-version-url')"
+        Write-Output "Response: $($json.response)"
+        Write-Output "Error: $($json.error)"
+      shell: pwsh
+
+    - name: Set response of binary scan on Linux
+      if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
+      id: set_response_linux
+      run: |
+        json='{
+          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
+          "response": "${{steps.binary_scan.outputs.response}}",
+          "error": "${{steps.binary_scan.outputs.error}}"
+        }'
+        echo "Asset version URL: $(echo $json | jq -r '.asset-version-url')"
+        echo "Response: $(echo $json | jq -r '.response')"
+        echo "Error: $(echo $json | jq -r '.error')"
+      shell: bash
+      env:
+        ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
+        RESPONSE: ${{steps.binary_scan.outputs.response}}
+        ERROR: ${{steps.binary_scan.outputs.error}}
 ```

@@ -158,6 +158,12 @@ starting point if you encounter any errors during the action's run.
 
 ## Extended Feature Example (Optional)
 
+> [!WARNING]
+>
+> Warning: To use the exact YAML code provided below, you must run it on
+> `ubuntu-latest`. If you want to run it on a different runner os, you will need
+> to adapt the code accordingly.
+
 In this section, we provide a code snippet for integrating this action into your
 existing workflow. Primarily, it uploads the file to the Finite State Platform
 for analysis. Once that process is complete, it automatically add a comment to
