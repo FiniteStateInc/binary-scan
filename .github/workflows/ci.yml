@@ -83,13 +83,9 @@ jobs:
         if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
         id: set_response_windows
         run: |
-          assetVersionUrl='${{ steps.binary_scan.outputs.asset-version-url }}'
-          response='${{ steps.binary_scan.outputs.response }}'
-          errorMsg='${{ steps.binary_scan.outputs.error }}'
-
-          Write-Output "Asset version URL: $assetVersionUrl"
-          Write-Output "Response: $response"
-          Write-Output "Error: $errorMsg"
+          Write-Output "Asset version URL: ${{ steps.binary_scan.outputs.asset-version-url }}"
+          Write-Output "Response: ${{ steps.binary_scan.outputs.response }}"
+          Write-Output "Error: ${{ steps.binary_scan.outputs.error }}"
 
       - name: Set response of binary scan on Linux
         if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
