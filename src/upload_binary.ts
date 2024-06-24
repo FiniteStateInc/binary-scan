@@ -86,7 +86,6 @@ export async function uploadBinary(): Promise<
     quickScan,
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
-
   core.info('Starting - Authentication')
   let token: string | undefined
   try {
@@ -117,7 +116,7 @@ export async function uploadBinary(): Promise<
         assetId: params.assetId,
         version: assetVersion as string
       })
-      core.setOutput('asset-version-url', response)
+      core.setOutput('asset-version-url', assetVersionUrl)
       core.info(`Asset version URL: ${assetVersionUrl}`)
 
       if (!automaticComment) {

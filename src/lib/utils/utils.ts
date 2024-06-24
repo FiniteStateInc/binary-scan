@@ -44,11 +44,11 @@ export function sanitizeFilePath(filePath: string): string {
 
 export function sanitizeInput(input: any) {
   if (input === null || input === undefined) {
-    return input // Return null or undefined as-is
+    return input // Return null or boolean undefined as-is
   }
 
-  if (typeof input === 'number') {
-    return input // Return number as-is
+  if (typeof input === 'number' || typeof input === 'boolean') {
+    return input // Return number or boolean as-is
   }
 
   if (typeof input !== 'string') {

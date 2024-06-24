@@ -33526,10 +33526,10 @@ function sanitizeFilePath(filePath) {
 exports.sanitizeFilePath = sanitizeFilePath;
 function sanitizeInput(input) {
     if (input === null || input === undefined) {
-        return input; // Return null or undefined as-is
+        return input; // Return null or boolean undefined as-is
     }
-    if (typeof input === 'number') {
-        return input; // Return number as-is
+    if (typeof input === 'number' || typeof input === 'boolean') {
+        return input; // Return number or boolean as-is
     }
     if (typeof input !== 'string') {
         return null; // Reject inputs that are neither string nor number
@@ -33704,7 +33704,7 @@ async function uploadBinary() {
                 assetId: params.assetId,
                 version: assetVersion
             });
-            core.setOutput('asset-version-url', response);
+            core.setOutput('asset-version-url', assetVersionUrl);
             core.info(`Asset version URL: ${assetVersionUrl}`);
             if (!automaticComment) {
                 core.info('Automatic comment disabled');
