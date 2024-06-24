@@ -126,35 +126,21 @@ binary_scan:
       if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
       id: set_response_windows
       run: |
-        $json = @"
-        {
-          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
-          "response": "${{steps.binary_scan.outputs.response}}",
-          "error": "${{steps.binary_scan.outputs.error}}"
-        }
-        "@
-        Write-Output "Asset version URL: $($json.'asset-version-url')"
-        Write-Output "Response: $($json.response)"
-        Write-Output "Error: $($json.error)"
-      shell: pwsh
+        Write-Output "Asset version URL: ${{ steps.binary_scan.outputs.asset-version-url }}"
+        Write-Output "Response: ${{ steps.binary_scan.outputs.response }}"
+        Write-Output "Error: ${{ steps.binary_scan.outputs.error }}"
 
     - name: Set response of binary scan on Linux
       if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
       id: set_response_linux
       run: |
-        json='{
-          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
-          "response": "${{steps.binary_scan.outputs.response}}",
-          "error": "${{steps.binary_scan.outputs.error}}"
-        }'
-        echo "Asset version URL: $(echo $json | jq -r '.asset-version-url')"
-        echo "Response: $(echo $json | jq -r '.response')"
-        echo "Error: $(echo $json | jq -r '.error')"
-      shell: bash
+        echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+        echo Response: "${{steps.binary_scan.outputs.response}}"
+        echo Error: "${{steps.binary_scan.outputs.error}}"
       env:
-        ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
-        RESPONSE: ${{steps.binary_scan.outputs.response}}
-        ERROR: ${{steps.binary_scan.outputs.error}}
+        ASSET_VERSION_URL: ${{ steps.binary_scan.outputs.asset-version-url }}
+        RESPONSE: ${{ steps.binary_scan.outputs.response }}
+        ERROR: ${{ steps.binary_scan.outputs.error }}
 ```
 
 ## Usage
@@ -201,33 +187,19 @@ binary_scan:
       if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
       id: set_response_windows
       run: |
-        $json = @"
-        {
-          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
-          "response": "${{steps.binary_scan.outputs.response}}",
-          "error": "${{steps.binary_scan.outputs.error}}"
-        }
-        "@
-        Write-Output "Asset version URL: $($json.'asset-version-url')"
-        Write-Output "Response: $($json.response)"
-        Write-Output "Error: $($json.error)"
-      shell: pwsh
+        Write-Output "Asset version URL: ${{ steps.binary_scan.outputs.asset-version-url }}"
+        Write-Output "Response: ${{ steps.binary_scan.outputs.response }}"
+        Write-Output "Error: ${{ steps.binary_scan.outputs.error }}"
 
     - name: Set response of binary scan on Linux
       if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
       id: set_response_linux
       run: |
-        json='{
-          "asset-version-url": "${{steps.binary_scan.outputs.asset-version-url}}",
-          "response": "${{steps.binary_scan.outputs.response}}",
-          "error": "${{steps.binary_scan.outputs.error}}"
-        }'
-        echo "Asset version URL: $(echo $json | jq -r '.asset-version-url')"
-        echo "Response: $(echo $json | jq -r '.response')"
-        echo "Error: $(echo $json | jq -r '.error')"
-      shell: bash
+        echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+        echo Response: "${{steps.binary_scan.outputs.response}}"
+        echo Error: "${{steps.binary_scan.outputs.error}}"
       env:
-        ASSET_VERSION_URL: ${{steps.binary_scan.outputs.asset-version-url}}
-        RESPONSE: ${{steps.binary_scan.outputs.response}}
-        ERROR: ${{steps.binary_scan.outputs.error}}
+        ASSET_VERSION_URL: ${{ steps.binary_scan.outputs.asset-version-url }}
+        RESPONSE: ${{ steps.binary_scan.outputs.response }}
+        ERROR: ${{ steps.binary_scan.outputs.error }}
 ```
