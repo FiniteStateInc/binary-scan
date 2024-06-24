@@ -86,7 +86,8 @@ export async function uploadBinary(): Promise<
     quickScan,
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
-
+  core.info(JSON.stringify(inputVariables))
+  console.log(inputVariables)
   core.info('Starting - Authentication')
   let token: string | undefined
   try {
