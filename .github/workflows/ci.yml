@@ -78,32 +78,3 @@ jobs:
           file-path: ./src/lib/utils/example_binary/esp-at.bin # Put the same path from the "Upload binary generated file" step here
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
           automatic-comment: true # optional if you would like to generate the comment automatically in the PR
-
-      - name: Set response of binary scan on Windows
-        if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
-        id: set_response_windows
-        run: |
-          $assetVersionUrl = "${{ steps.binary_scan.outputs.asset-version-url }}"
-          $response = "${{ steps.binary_scan.outputs.response }}"
-          $error = "${{ steps.binary_scan.outputs.error }}"
-  
-          Write-Output "Asset version URL: $assetVersionUrl"
-          Write-Output "Response: $response"
-          Write-Output "Error: $error"
-    
-      - name: Set response of binary scan on Linux
-        if: steps.binary_scan.outcome == 'success' && runner.os == 'Linux'
-        id: set_response_linux
-        run: |
-          json='{
-            "asset-version-url": "${{ steps.binary_scan.outputs.asset-version-url }}",
-            "response": "${{ steps.binary_scan.outputs.response }}",
-            "error": "${{ steps.binary_scan.outputs.error }}"
-          }'
-          echo "Asset version URL: $(echo "$json" | jq -r '.asset-version-url')"
-          echo "Response: $(echo "$json" | jq -r '.response')"
-          echo "Error: $(echo "$json" | jq -r '.error')"
-        env:
-          ASSET_VERSION_URL: ${{ steps.binary_scan.outputs.asset-version-url }}
-          RESPONSE: ${{ steps.binary_scan.outputs.response }}
-          ERROR: ${{ steps.binary_scan.outputs.error }}
