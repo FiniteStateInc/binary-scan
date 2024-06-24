@@ -75,10 +75,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional if you would like to generate the comment automatically in the PR
           automatic-comment: true # optional if you would like to generate the comment automatically in the PR
 
-      - name: Set response of binary scan
-        if: steps.binary_scan.outcome=='success'
-        id: set_response
-        run: |
-          echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
-          echo Response: "${{steps.binary_scan.outputs.response}}"
-          echo Error: "${{steps.binary_scan.outputs.error}}"
+      # - name: Set response of binary scan
+      #   if: steps.binary_scan.outcome=='success'
+      #   id: set_response
+      #   run: |
+      #     echo Asset version URL: ${{steps.binary_scan.outputs.asset-version-url}}
+      #     echo Response: "${{steps.binary_scan.outputs.response}}"
+      #     echo Error: "${{steps.binary_scan.outputs.error}}"
