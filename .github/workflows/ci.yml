@@ -83,9 +83,9 @@ jobs:
         if: steps.binary_scan.outcome == 'success' && runner.os == 'Windows'
         id: set_response_windows
         run: |
-          $assetVersionUrl = '${{ steps.binary_scan.outputs.asset-version-url }}'
-          $response = '${{ steps.binary_scan.outputs.response }}'
-          $errorMsg = '${{ steps.binary_scan.outputs.error }}'
+          $assetVersionUrl='${{ steps.binary_scan.outputs.asset-version-url }}'
+          $response='${{ steps.binary_scan.outputs.response }}'
+          $errorMsg='${{ steps.binary_scan.outputs.error }}'
 
           Write-Output "Asset version URL: $assetVersionUrl"
           Write-Output "Response: $response"
