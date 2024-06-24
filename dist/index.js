@@ -33526,10 +33526,10 @@ function sanitizeFilePath(filePath) {
 exports.sanitizeFilePath = sanitizeFilePath;
 function sanitizeInput(input) {
     if (input === null || input === undefined) {
-        return input; // Return null or undefined as-is
+        return input; // Return null or boolean undefined as-is
     }
-    if (typeof input === 'number') {
-        return input; // Return number as-is
+    if (typeof input === 'number' || typeof input === 'boolean') {
+        return input; // Return number or boolean as-is
     }
     if (typeof input !== 'string') {
         return null; // Reject inputs that are neither string nor number
@@ -33679,6 +33679,8 @@ async function uploadBinary() {
         quickScan,
         uploadMethod: fs_main_1.UploadMethod.GITHUB_INTEGRATION
     };
+    core.info(JSON.stringify(inputVariables));
+    console.log(inputVariables);
     core.info('Starting - Authentication');
     let token;
     try {
