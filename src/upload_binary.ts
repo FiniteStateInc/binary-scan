@@ -1,10 +1,6 @@
 import * as core from '@actions/core'
-import getAuthToken from './lib/fs/fs_token'
-import {
-  UploadMethod,
-  createNewAssetVersionAndUploadBinary,
-  createNewAssetVersionAndUploadBinaryParams
-} from './lib/fs/fs_main'
+import FiniteStateSDK from 'finite-state-sdk'
+
 import {
   extractAssetVersion,
   generateAssetVersionUrl,
@@ -15,7 +11,8 @@ import {
   githubInputParamsType,
   isPullRequest
 } from './lib/utils/github_utils'
-import { createNewAssetVersionAndUploadBinaryResponseType } from './lib/fs/types'
+import { createNewAssetVersionAndUploadBinaryParams, CreateNewAssetVersionAndUploadBinaryResponseType } from 'node_modules/finite-state-sdk/dist/types'
+import { UploadMethod } from 'node_modules/finite-state-sdk/dist/fs/types'
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {
@@ -52,7 +49,7 @@ export async function getInputs(): Promise<githubInputParamsType> {
 }
 
 export async function uploadBinary(): Promise<
-  createNewAssetVersionAndUploadBinaryResponseType | undefined
+  CreateNewAssetVersionAndUploadBinaryResponseType | undefined
 > {
   const inputVariables = await getInputs()
   core.setSecret('FINITE-STATE-CLIENT-ID')
@@ -87,20 +84,19 @@ export async function uploadBinary(): Promise<
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
   core.info('Starting - Authentication')
-  let token: string | undefined
+  let client: FiniteStateSDK | undefined;
   try {
-    token = await getAuthToken(clientId, clientSecret)
+    client = new FiniteStateSDK({clientId,clientSecret,organizationContext })
   } catch (error) {
-    const msgError = `Caught an exception trying to get and auth token on Finite State: ${error}`
+    const msgError = `Caught an exception trying to create client on FiniteStateSDK: ${error}`
     core.error(msgError)
     core.setFailed(msgError)
     core.setOutput('error', error)
   }
-  if (token) {
+  
+  if (client) {
     try {
-      const response = await createNewAssetVersionAndUploadBinary(
-        token,
-        organizationContext,
+      const response = await client.createNewAssetVersionAndUploadBinary(
         params
       )
       core.info('File uploaded')
