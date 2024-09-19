@@ -11,7 +11,10 @@ import {
   githubInputParamsType,
   isPullRequest
 } from './lib/utils/github_utils'
-import { createNewAssetVersionAndUploadBinaryParams, CreateNewAssetVersionAndUploadBinaryResponseType } from 'node_modules/finite-state-sdk/dist/types'
+import {
+  createNewAssetVersionAndUploadBinaryParams,
+  CreateNewAssetVersionAndUploadBinaryResponseType
+} from 'node_modules/finite-state-sdk/dist/types'
 import { UploadMethod } from 'node_modules/finite-state-sdk/dist/fs/types'
 
 export async function getInputs(): Promise<githubInputParamsType> {
@@ -84,21 +87,19 @@ export async function uploadBinary(): Promise<
     uploadMethod: UploadMethod.GITHUB_INTEGRATION
   }
   core.info('Starting - Authentication')
-  let client: FiniteStateSDK | undefined;
+  let client: FiniteStateSDK | undefined
   try {
-    client = new FiniteStateSDK({clientId,clientSecret,organizationContext })
+    client = new FiniteStateSDK({ clientId, clientSecret, organizationContext })
   } catch (error) {
     const msgError = `Caught an exception trying to create client on FiniteStateSDK: ${error}`
     core.error(msgError)
     core.setFailed(msgError)
     core.setOutput('error', error)
   }
-  
+
   if (client) {
     try {
-      const response = await client.createNewAssetVersionAndUploadBinary(
-        params
-      )
+      const response = await client.createNewAssetVersionAndUploadBinary(params)
       core.info('File uploaded')
       core.setOutput('response', response)
 
