@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import FiniteStateSDK from 'finite-state-sdk'
+import {createNewAssetVersionAndUploadBinaryParams, CreateNewAssetVersionAndUploadBinaryResponseType, FiniteStateSDK, UploadMethod} from 'finite-state-sdk'
 
 import {
   extractAssetVersion,
@@ -11,11 +11,6 @@ import {
   githubInputParamsType,
   isPullRequest
 } from './lib/utils/github_utils'
-import {
-  createNewAssetVersionAndUploadBinaryParams,
-  CreateNewAssetVersionAndUploadBinaryResponseType
-} from 'node_modules/finite-state-sdk/dist/types'
-import { UploadMethod } from 'node_modules/finite-state-sdk/dist/fs/types'
 
 export async function getInputs(): Promise<githubInputParamsType> {
   return {

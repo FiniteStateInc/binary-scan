@@ -70,7 +70,7 @@
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
     "axios": "^1.7.4",
-    "finite-state-sdk": "^0.0.1-beta.2"
+    "finite-state-sdk": "^0.0.1-beta.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
