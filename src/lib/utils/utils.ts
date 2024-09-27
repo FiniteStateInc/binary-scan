@@ -1,5 +1,5 @@
+import { CreateNewAssetVersionAndUploadBinaryResponseType } from 'finite-state-sdk'
 import * as fs from 'fs'
-import { CreateNewAssetVersionAndUploadBinaryResponseType } from 'node_modules/finite-state-sdk/dist/types'
 import * as path from 'path'
 
 export async function extractAssetVersion(

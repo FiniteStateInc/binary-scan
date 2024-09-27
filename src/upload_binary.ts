@@ -1,5 +1,10 @@
 import * as core from '@actions/core'
-import {createNewAssetVersionAndUploadBinaryParams, CreateNewAssetVersionAndUploadBinaryResponseType, FiniteStateSDK, UploadMethod} from 'finite-state-sdk'
+import {
+  createNewAssetVersionAndUploadBinaryParams,
+  CreateNewAssetVersionAndUploadBinaryResponseType,
+  FiniteStateSDK,
+  UploadMethod
+} from 'finite-state-sdk'
 
 import {
   extractAssetVersion,
