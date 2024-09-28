@@ -41,6 +41,9 @@ jobs:
         id: install
         run: npm ci
 
+      - name: Clean dist folder
+        run: rm -rf dist
+
       - name: Build dist/ Directory
         id: build
         run: npm run bundle
