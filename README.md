@@ -23,14 +23,14 @@ for them.
 
 > [!WARNING]
 >
-> Warning: Ensure the GitHub Actions runner environment supports both Node.js
-> and Python when running workflows that include JavaScript and Python scripts.
-> Using an incompatible runner environment may result in errors or unexpected
-> behavior during script execution.
+> Warning: Ensure the GitHub Actions runner environment supports Node.js when
+> running workflows that include JavaScript scripts. Using an incompatible
+> runner environment may result in errors or unexpected behavior during script
+> execution.
 >
 > To avoid issues, consider using a GitHub-hosted runner image like
-> 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with both
-> Node.js and Python required versions.
+> 'ubuntu-latest' or 'microsoft-latest' that comes pre-installed with Node.js
+> required version.
 
 <!-- action-docs-description -->
 
@@ -114,7 +114,7 @@ reference the **Inputs** section.
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v3.0.0
+uses: FiniteStateInc/binary-scan@v4.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -136,7 +136,7 @@ The following example includes optional parameters `github-token` and
 **Example:**
 
 ```yaml
-uses: FiniteStateInc/binary-scan@v3.0.0
+uses: FiniteStateInc/binary-scan@v4.0.0
 with:
   finite-state-client-id: ${{ secrets.CLIENT_ID }}
   finite-state-secret: ${{ secrets.CLIENT_SECRET }}
@@ -210,7 +210,7 @@ jobs:
           path: # Put the path to your binary file generated in the previous step here
 
       - name: Binary Scan
-        uses: FiniteStateInc/binary-scan@v3.0.0
+        uses: FiniteStateInc/binary-scan@v4.0.0
         id: binary_scan
         with:
           finite-state-client-id: ${{ secrets.CLIENT_ID }}

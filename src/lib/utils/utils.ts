@@ -1,9 +1,9 @@
+import { CreateNewAssetVersionAndUploadBinaryResponseType } from 'finite-state-sdk'
 import * as fs from 'fs'
 import * as path from 'path'
-import { createNewAssetVersionAndUploadBinaryResponseType } from '../fs/types'
 
 export async function extractAssetVersion(
-  inputString: createNewAssetVersionAndUploadBinaryResponseType
+  inputString: CreateNewAssetVersionAndUploadBinaryResponseType
 ): Promise<string | null> {
   const str = inputString.launchBinaryUploadProcessing.key
   // Define a regular expression pattern to match the asset_version value
