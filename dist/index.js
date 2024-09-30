@@ -32728,7 +32728,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateComment = exports.isPullRequest = void 0;
+exports.isPullRequest = isPullRequest;
+exports.generateComment = generateComment;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 async function isPullRequest() {
@@ -32739,7 +32740,6 @@ async function isPullRequest() {
     }
     return true;
 }
-exports.isPullRequest = isPullRequest;
 async function getPRNumber() {
     if (!(await isPullRequest())) {
         core.info('This context does not belongs to a pull request.');
@@ -32772,7 +32772,6 @@ async function generateComment(githubToken, assetVersionUrl) {
         core.info(`Commented on PR #${PRNumber}`);
     }
 }
-exports.generateComment = generateComment;
 
 
 /***/ }),
@@ -32806,7 +32805,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sanitizeInput = exports.sanitizeFilePath = exports.generateAssetVersionUrl = exports.extractAssetVersion = void 0;
+exports.extractAssetVersion = extractAssetVersion;
+exports.generateAssetVersionUrl = generateAssetVersionUrl;
+exports.sanitizeFilePath = sanitizeFilePath;
+exports.sanitizeInput = sanitizeInput;
 const fs = __importStar(__nccwpck_require__(7147));
 const path = __importStar(__nccwpck_require__(1017));
 async function extractAssetVersion(inputString) {
@@ -32824,11 +32826,9 @@ async function extractAssetVersion(inputString) {
         return null; // Return null if asset version value is not found
     }
 }
-exports.extractAssetVersion = extractAssetVersion;
 async function generateAssetVersionUrl(params) {
     return `https://platform.finitestate.io/artifacts/${params.assetId}/versions/${params.version}`;
 }
-exports.generateAssetVersionUrl = generateAssetVersionUrl;
 /**
  * Validate and sanitize the file path to prevent directory traversal attacks.
  * @param {string} filePath - The file path to validate.
@@ -32842,7 +32842,6 @@ function sanitizeFilePath(filePath) {
     }
     return resolvedPath;
 }
-exports.sanitizeFilePath = sanitizeFilePath;
 function sanitizeInput(input) {
     if (input === null || input === undefined) {
         return input; // Return null or boolean undefined as-is
@@ -32861,7 +32860,6 @@ function sanitizeInput(input) {
     // Additional validation or whitelisting based on your specific requirements
     return sanitizedInput;
 }
-exports.sanitizeInput = sanitizeInput;
 
 
 /***/ }),
@@ -32895,7 +32893,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const upload_binary_1 = __nccwpck_require__(6585);
 /**
@@ -32915,7 +32913,6 @@ async function run() {
             core.setFailed(error.message);
     }
 }
-exports.run = run;
 
 
 /***/ }),
@@ -32949,7 +32946,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.uploadBinary = exports.getInputs = void 0;
+exports.getInputs = getInputs;
+exports.uploadBinary = uploadBinary;
 const core = __importStar(__nccwpck_require__(2186));
 const finite_state_sdk_1 = __nccwpck_require__(6240);
 const utils_1 = __nccwpck_require__(2852);
@@ -32976,7 +32974,6 @@ async function getInputs() {
         inputGithubToken: (0, utils_1.sanitizeInput)(core.getInput('GITHUB-TOKEN'))
     };
 }
-exports.getInputs = getInputs;
 async function uploadBinary() {
     const inputVariables = await getInputs();
     core.setSecret('FINITE-STATE-CLIENT-ID');
@@ -33041,7 +33038,6 @@ async function uploadBinary() {
         }
     }
 }
-exports.uploadBinary = uploadBinary;
 
 
 /***/ }),
