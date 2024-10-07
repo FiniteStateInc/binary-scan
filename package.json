@@ -73,11 +73,11 @@
     "finite-state-sdk": "^0.0.1-beta.4"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
-    "@vercel/ncc": "^0.38.1",
+    "@vercel/ncc": "^0.38.2",
     "eslint": "^8.57.0",
     "eslint-plugin-github": "^5.0.1",
     "eslint-plugin-jest": "^28.6.0",
